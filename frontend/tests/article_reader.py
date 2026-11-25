@@ -4,6 +4,7 @@ Run after building the frontend, with Chrome installed:
     uv run --project backend --with playwright==1.58.0 python frontend/tests/article_reader.py
 """
 import os
+import re
 import socket
 import sys
 import tempfile
@@ -48,36 +49,90 @@ def subscribe():
         assert client.post('/api/feeds', json=dict(url='https://example.org/feed')).status_code == 201
 
 
+def tap(page, across):
+    """A tap on the page, `across` of the way from its left edge to its right."""
+    size = page.viewport_size
+    page.mouse.click(size['width'] * across, size['height'] / 2)
+
+
 def check_reader(page, url):
     page.goto(url)
     opener = page.get_by_role('button', name='Source Long article')
     opener.click()
     dialog = page.get_by_role('dialog')
-    expect(dialog.get_by_text('Paragraph 30.', exact=False)).to_be_attached()
-    forward = dialog.get_by_role('button', name='Next')
-    forward.click()
     sheet = dialog.locator('article')
-    assert sheet.evaluate('el => el.scrollLeft === el.clientWidth')
-    page.keyboard.press('ArrowLeft')
-    expect(dialog.get_by_role('button', name='Previous')).to_be_disabled()
-    dialog.get_by_role('button', name='Increase text size').click()
-    expect(sheet).to_have_css('font-size', '22px')
+    counter = dialog.locator('.counter')
+    expect(dialog.get_by_text('Paragraph 30.', exact=False)).to_be_attached()
 
+    # The first article opens with a guide; a tap under it turns no page.
+    expect(dialog.get_by_role('heading', name='Reading an article')).to_be_visible()
+    dialog.get_by_role('button', name='Next', exact=True).click()
+    dialog.get_by_role('button', name='Next', exact=True).click()
+    dialog.get_by_role('button', name='All done').click()
+    expect(dialog.get_by_role('heading', name='Finished reading?')).to_have_count(0)
+    expect(counter).to_have_text(re.compile(r'^1 / \d+$'))
+    single = int(counter.inner_text().split(' / ')[1])
+    assert single > 3
+
+    # A tap on the right turns forward, the left arrow key back, a tap on the left does nothing on the first page.
+    tap(page, 0.9)
+    expect(counter).to_have_text(f'2 / {single}')
+    page.keyboard.press('ArrowLeft')
+    expect(counter).to_have_text(f'1 / {single}')
+    tap(page, 0.1)
+    expect(counter).to_have_text(f'1 / {single}')
+
+    # A tap on the middle shows the menu, and another hides it.
+    menu = dialog.locator('.menu-bar')
+    if 'shown' in menu.get_attribute('class'):
+        tap(page, 0.5)
+    expect(menu).not_to_have_class(re.compile('shown'))
+    tap(page, 0.5)
+    expect(menu).to_have_class(re.compile('shown'))
+
+    # The view settings: paper colour, text size, and two pages side by side.
+    dialog.get_by_role('button', name='View settings', exact=True).click()
+    dialog.get_by_role('button', name='Sepia').click()
+    expect(dialog).to_have_css('background-color', 'rgb(252, 246, 229)')
+    dialog.get_by_role('slider', name='Text size').fill('22')
+    expect(sheet).to_have_css('font-size', '22px')
+    dialog.get_by_role('button', name='Two pages').click()
+    expect(sheet).to_have_css('column-count', '2')
+    # Each of the two pages is half as wide as the one was, less the space between them.
+    assert sheet.evaluate('el => el.querySelector("p:last-child").getBoundingClientRect().width < el.clientWidth / 2')
+    # Escape puts the settings away first; the article stays open.
+    page.keyboard.press('Escape')
+    expect(dialog.get_by_role('slider', name='Text size')).to_have_count(0)
+    expect(dialog).to_be_visible()
+
+    # A narrow window shows one page whatever was chosen, and the last page ends the turning.
     page.set_viewport_size(dict(width=375, height=640))
+    expect(sheet).to_have_css('column-count', '1')
+    last = int(counter.inner_text().split(' / ')[1])
     # Bound page turns so a navigation regression fails promptly.
-    for _ in range(100):
-        if not forward.is_enabled():
-            break
-        forward.click()
-    expect(forward).to_be_disabled()
-    assert sheet.evaluate('el => Math.abs(el.scrollLeft + el.clientWidth - el.scrollWidth) < 2')
+    for _ in range(last + 5):
+        tap(page, 0.9)
+    expect(counter).to_have_text(f'{last} / {last}')
+    # The end of the text is on it, once the page has slid in. A paragraph may run over two
+    # pages, so each part of it is looked at.
+    page.wait_for_function('''() => [...document.querySelector("dialog article p:last-child").getClientRects()]
+        .some(part => part.left >= 0 && part.right <= innerWidth)''', timeout=5000)
     page.keyboard.press('Escape')
     expect(dialog).to_have_count(0)
     expect(opener).to_be_focused()
 
+    # What was chosen is kept: after a reload the guide stays away and the paper is still sepia.
+    page.set_viewport_size(dict(width=990, height=750))
+    page.reload()
     page.get_by_role('button', name='Source Offline article').click()
     expect(dialog.get_by_text('Saved excerpt.', exact=True)).to_be_visible()
-    dialog.get_by_role('button', name='Back to feed').click()
+    expect(dialog.get_by_role('heading', name='Reading an article')).to_have_count(0)
+    expect(dialog).to_have_css('background-color', 'rgb(252, 246, 229)')
+    expect(sheet).to_have_css('font-size', '22px')
+    with page.expect_download() as download:
+        dialog.get_by_role('button', name='Download as Markdown').click()
+    assert re.fullmatch(r'\d{4}-\d\d-\d\d_Offline_article\.md', download.value.suggested_filename)
+    dialog.get_by_role('button', name='Close reader').click()
     expect(dialog).to_have_count(0)
     assert len(page.context.pages) == 1
     assert page.url == url

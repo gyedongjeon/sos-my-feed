@@ -1,10 +1,22 @@
 import { defineStore } from 'pinia'
 import { api } from '../api'
 import { t } from '../i18n'
-import type { PageLanguage, Settings, Theme } from '../types'
+import type { PageLanguage, ReaderSettings, Settings, Theme } from '../types'
 
 // The language of the pages matching the browser's language, e.g. "ko-KR" -> Korean.
 const browserLanguage = (): PageLanguage => (navigator.language.toLowerCase().startsWith('ko') ? 'ko' : 'en')
+
+const DEFAULT_READER: ReaderSettings = { theme: 'light', size: 20, lineHeight: 1.8, marginV: 80, marginH: 40, pages: 1, tutorialSeen: false }
+
+const readerOf = (saved: Settings): ReaderSettings => ({
+  theme: saved.reader_theme,
+  size: saved.reader_size,
+  lineHeight: saved.reader_line_height,
+  marginV: saved.reader_margin_v,
+  marginH: saved.reader_margin_h,
+  pages: saved.reader_pages,
+  tutorialSeen: saved.reader_tutorial_seen,
+})
 
 /** How the pages look and read. The backend keeps the choices. */
 export const useSettingsStore = defineStore('settings', {
@@ -12,33 +24,49 @@ export const useSettingsStore = defineStore('settings', {
     // Until the saved choice is loaded, the pages are in the browser's language.
     language: browserLanguage(),
     theme: '' as Theme,
-    // The size of an article's text, in pixels.
-    readerSize: 20,
+    // How an article is laid out for reading, as it is shown now.
+    reader: { ...DEFAULT_READER },
+    // The layout that is saved; `reader` differs from it while a choice is being tried.
+    savedReader: { ...DEFAULT_READER },
     error: null as string | null,
   }),
   actions: {
+    /** Takes over what the backend has. */
+    keep(saved: Settings) {
+      if (saved.language) this.language = saved.language
+      this.theme = saved.theme
+      this.savedReader = readerOf(saved)
+      this.reader = { ...this.savedReader }
+    },
     async load() {
       try {
         const saved = await api<Settings>('/settings')
-        this.theme = saved.theme
-        this.readerSize = saved.reader_size
-        if (saved.language) this.language = saved.language
+        this.keep(saved)
         // First visit: start from the browser's language; the reader can change it any time.
-        else await this.setLanguage(browserLanguage())
+        if (!saved.language) await this.setLanguage(browserLanguage())
       } catch (e) {
         this.error = (e as Error).message
       }
     },
     /** Saves the choices with some of them changed; a choice that cannot be saved is not made. */
-    async save(changed: Partial<Settings>) {
+    async save(changed: { language?: PageLanguage; theme?: Theme; reader?: Partial<ReaderSettings> }) {
       this.error = null
-      const next: Settings = { language: this.language, theme: this.theme, reader_size: this.readerSize, ...changed }
+      const reader = { ...this.savedReader, ...changed.reader }
+      const next: Settings = {
+        language: changed.language ?? this.language,
+        theme: changed.theme ?? this.theme,
+        reader_theme: reader.theme,
+        reader_size: reader.size,
+        reader_line_height: reader.lineHeight,
+        reader_margin_v: reader.marginV,
+        reader_margin_h: reader.marginH,
+        reader_pages: reader.pages,
+        reader_tutorial_seen: reader.tutorialSeen,
+      }
       try {
-        const saved = await api<Settings>('/settings', { method: 'PUT', json: next })
-        if (saved.language) this.language = saved.language
-        this.theme = saved.theme
-        this.readerSize = saved.reader_size
+        this.keep(await api<Settings>('/settings', { method: 'PUT', json: next }))
       } catch (e) {
+        this.reader = { ...this.savedReader }
         this.error = t('settings.saveFailed', { error: (e as Error).message })
       }
     },
@@ -48,8 +76,12 @@ export const useSettingsStore = defineStore('settings', {
     setTheme(theme: Theme) {
       return this.save({ theme })
     },
-    setReaderSize(size: number) {
-      return this.save({ reader_size: size })
+    /** Shows the article with a layout that is not saved yet, as while a slider is dragged. */
+    previewReader(changed: Partial<ReaderSettings>) {
+      Object.assign(this.reader, changed)
+    },
+    setReader(changed: Partial<ReaderSettings>) {
+      return this.save({ reader: changed })
     },
   },
 })

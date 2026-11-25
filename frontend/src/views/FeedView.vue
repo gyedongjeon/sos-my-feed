@@ -81,13 +81,6 @@ async function subscribe() {
       </section>
     </div>
 
-    <ArticleReader
-      v-if="selected"
-      :font-size="settings.readerSize"
-      :article="selected.article"
-      :source="selected.feed.title"
-      @update:font-size="settings.setReaderSize"
-      @close="selected = undefined"
-    />
+    <ArticleReader v-if="selected" :article="selected.article" :source="selected.feed.title" @close="selected = undefined" />
   </main>
 </template>

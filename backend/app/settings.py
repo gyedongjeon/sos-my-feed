@@ -16,8 +16,17 @@ class Settings(BaseModel):
     language: Literal["en", "ko"] | None = None
     # A theme of the pages by its name; empty follows the system.
     theme: Literal["", "sos", "sos-night"] = ""
-    # The size of an article's text, in pixels.
-    reader_size: int = Field(default=20, ge=16, le=32)
+    # How an article is laid out for reading: the paper's colour, the size of the text in
+    # pixels, the height of a line in text sizes, the margins above and beside the text in
+    # pixels, and whether one page or two are shown side by side.
+    reader_theme: Literal["light", "sepia", "mint", "forest", "gray", "dark"] = "light"
+    reader_size: int = Field(default=20, ge=14, le=32)
+    reader_line_height: float = Field(default=1.8, ge=1.2, le=2.4)
+    reader_margin_v: int = Field(default=80, ge=40, le=120)
+    reader_margin_h: int = Field(default=40, ge=20, le=80)
+    reader_pages: int = Field(default=1, ge=1, le=2)
+    # Whether the reader has been shown how pages are turned.
+    reader_tutorial_seen: bool = False
 
 
 @router.get("/settings", response_model=Settings)

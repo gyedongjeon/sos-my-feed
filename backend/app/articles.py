@@ -1,6 +1,7 @@
 """Extract plain reading text from a public article without loading its resources."""
 import re
 from html.parser import HTMLParser
+from typing import Literal
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
@@ -14,14 +15,21 @@ class ArticleRequest(BaseModel):
     url: str = Field(min_length=1, max_length=2000)
 
 
+class Block(BaseModel):
+    kind: Literal["paragraph", "heading", "quote"]
+    text: str
+
+
 class ArticleText(BaseModel):
-    paragraphs: list[str]
+    # The text of the article in reading order.
+    blocks: list[Block]
 
 
 class ArticleParser(HTMLParser):
-    blocks = set('article main section div p br hr h2 h3 h4 h5 h6 li blockquote pre'.split())
+    block_tags = set('article main section div p br hr h2 h3 h4 h5 h6 li blockquote pre'.split())
     ignored = set('head header footer nav aside script style template noscript form button iframe svg h1'.split())
     news_extras = {'byline', 'metadata', 'media', 'image', 'eventPromo', 'promoList', 'topicList'}
+    headings = set('h2 h3 h4 h5 h6'.split())
     void = set('area base br col embed hr img input link meta param source track wbr'.split())
 
     def __init__(self):
@@ -36,11 +44,20 @@ class ArticleParser(HTMLParser):
     def flush(self):
         line = ' '.join(''.join(self.fragments).split())
         if line:
-            self.groups[self.group].append(line)
+            self.groups[self.group].append({'kind': self.kind(), 'text': line})
         self.fragments.clear()
 
+    def kind(self):
+        """What the text being collected is, by the innermost element that says so."""
+        for tag, _, _ in reversed(self.stack):
+            if tag in self.headings:
+                return 'heading'
+            if tag == 'blockquote':
+                return 'quote'
+        return 'paragraph'
+
     def handle_starttag(self, tag, attrs):
-        if tag in self.blocks:
+        if tag in self.block_tags:
             self.flush()
         if tag in self.void:
             return
@@ -70,7 +87,7 @@ class ArticleParser(HTMLParser):
         for index in range(len(self.stack) - 1, -1, -1):
             name, hidden, group = self.stack[index]
             if name == tag:
-                if tag in self.blocks or group != self.group:
+                if tag in self.block_tags or group != self.group:
                     self.flush()
                 self.group, self.hidden = group, hidden
                 del self.stack[index:]
@@ -80,10 +97,10 @@ class ArticleParser(HTMLParser):
         if not self.hidden:
             self.fragments.append(data)
 
-    def paragraphs(self):
+    def blocks(self):
         self.flush()
         candidates = (i for i, lines in enumerate(self.groups) if lines)
-        best = max(candidates, key=lambda i: (self.ranks[i], sum(map(len, self.groups[i]))),
+        best = max(candidates, key=lambda i: (self.ranks[i], sum(len(line['text']) for line in self.groups[i])),
                    default=None)
         if best is None:
             raise ValueError('No readable content')
@@ -105,7 +122,7 @@ def read_article(url):
     parser = ArticleParser()
     parser.feed(html)
     parser.close()
-    return {'paragraphs': parser.paragraphs()}
+    return {'blocks': parser.blocks()}
 
 
 @router.post("/article", response_model=ArticleText)
