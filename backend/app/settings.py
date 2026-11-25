@@ -13,7 +13,10 @@ router = APIRouter(prefix="/api")
 class Settings(BaseModel):
     # The language of the pages. None until the reader (or the browser's language, on the
     # first visit) has chosen one.
-    language: Literal["en", "ko"] | None = None
+    language: Literal[
+        "en", "ko", "ja", "zh-Hans", "zh-Hant", "es", "fr", "de", "it", "pt",
+        "pl", "ru", "uk", "tr", "vi", "th", "id", "hi", "bn",
+    ] | None = None
     # A theme of the pages by its name; empty follows the system.
     theme: Literal["", "sos", "sos-night"] = ""
     # How an article is laid out for reading: the paper's colour, the size of the text in

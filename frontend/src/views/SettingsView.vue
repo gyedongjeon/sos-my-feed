@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { t } from '../i18n'
+import { LANGUAGES } from '../languages'
 import { useFeedsStore } from '../stores/feeds'
 import { useSettingsStore } from '../stores/settings'
 import type { PageLanguage, Theme } from '../types'
@@ -25,8 +26,7 @@ async function remove(id: number) {
         <label class="grid gap-2 font-semibold">
           {{ t('settings.language') }}
           <select class="select" :value="settings.language" @change="settings.setLanguage(chosen($event) as PageLanguage)">
-            <option value="ko">한국어</option>
-            <option value="en">English</option>
+            <option v-for="l in LANGUAGES" :key="l.code" :value="l.code">{{ l.label }}</option>
           </select>
         </label>
         <label class="grid gap-2 font-semibold">

@@ -1,7 +1,8 @@
 // The shapes of what the backend answers.
 
-/** A language the pages are written in. */
-export type PageLanguage = 'en' | 'ko'
+import type { PageLanguage } from './languages'
+
+export type { PageLanguage }
 
 /** A theme of the pages by its daisyUI name; empty follows the system. */
 export type Theme = '' | 'sos' | 'sos-night'

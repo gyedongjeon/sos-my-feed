@@ -17,7 +17,7 @@ Part of the SOS series, next to [SOS My Language](https://github.com/gyedongjeon
 - **Reading in the app, like a book**: an article opens as plain text, without the page's scripts, ads, or menus, in the manner of the [Re:Leaf](https://github.com/gyedongjeon/releaf) reader: pages instead of scrolling, one or two at a time, turned with a tap on either side.
 - **Paper to your taste**: six background colors, and the text size, line spacing, and margins you choose.
 - **Yours to keep**: the subscriptions, their articles, and your settings are stored in a file on your computer. There is no account and no server besides the one the app runs for itself.
-- **English and Korean pages**, with a light and a dark theme.
+- **Pages in 19 languages**: English, Korean, Japanese, Chinese (Simplified and Traditional), Spanish, French, German, Italian, Portuguese, Polish, Russian, Ukrainian, Turkish, Vietnamese, Thai, Indonesian, Hindi, and Bengali, with a light and a dark theme.
 
 ## Install
 Installers for **Apple Silicon Macs** and **64-bit Windows** are attached to each
@@ -80,8 +80,11 @@ not carried over: remove the old app, install the new one, and subscribe again.
 Paste the address of an RSS or Atom feed into **Feed URL** and choose **Subscribe**. Most news
 sites and blogs link their feed as "RSS"; copy that link's address.
 
-The pages start in your system's language where they are written in it (English or Korean).
-The language and the theme (system, light, or dark) can be changed under Settings.
+The pages start in your system's language where they are written in it, and in English
+otherwise. The language and the theme (system, light, or dark) can be changed under Settings.
+English and Korean were written by hand; the other languages were translated by AI and have not
+been checked by a native speaker, so a text may read a little oddly (corrections are welcome).
+Messages of the backend's errors and the dialogs of the desktop app are in English.
 
 ## How it works
 - **My feed** lists the articles of every feed by date, newest first; the buttons above the
@@ -162,15 +165,16 @@ build, the desktop type check, and a build of the Windows installer (`.github/wo
 
 ## Adding a language for the pages
 The texts of the pages are in `frontend/src/i18n/`: `en.ts` has every text by a key, and a file
-for each other language (`ko.ts`) the same keys in that language.
+for each other language (`ko.ts`, `ja.ts`, `zh-Hans.ts`, ...) the same keys in that language.
 
-1. Copy `ko.ts` to a file for the new language and translate the values. `{name}` is filled in
-   and must be kept.
-2. Add its code to `PageLanguage` in `frontend/src/types.ts`, list the file in
-   `frontend/src/i18n/index.ts`, add the language to the selector in
-   `frontend/src/views/SettingsView.vue`, and allow its code in `Settings` of
-   `backend/app/settings.py`.
-3. Run the tests. TypeScript refuses a file that lacks a key.
+1. Copy `ko.ts` to a file named by the language's code and translate the values. `{name}` is
+   filled in and must be kept.
+2. Add the language to `LANGUAGES` in `frontend/src/languages.ts` (its code, its own name, and
+   the browser language tags it stands for), list the file in `frontend/src/i18n/index.ts`, and
+   allow its code in `Settings` of `backend/app/settings.py`.
+3. Run the tests. TypeScript refuses a file that lacks a key, and
+   `frontend/src/i18n/files.test.ts` checks that every language has its file, with every text
+   and the names to fill in.
 
 A page must not contain a fixed text: use `t('key')`.
 
