@@ -13,6 +13,11 @@ LIMIT = 4 * 1024 * 1024
 
 
 def download(url):
+    data, final_url, _ = fetch_public(url)
+    return parse_feed(data, final_url)
+
+
+def fetch_public(url):
     for _ in range(5):
         parts = urlsplit(url)
         if parts.scheme not in ('https', 'http') or not parts.hostname or parts.username is not None:
@@ -47,7 +52,7 @@ def download(url):
             data = response.read(LIMIT + 1)
             if len(data) > LIMIT:
                 raise ValueError('Feed too large')
-            return parse_feed(data, url)
+            return data, url, response.headers
         finally:
             connection.close()
     raise ValueError('Too many redirects')
