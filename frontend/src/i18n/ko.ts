@@ -4,7 +4,6 @@ import type { MessageKey } from './index'
 const ko: Record<MessageKey, string> = {
   'nav.feed': '내 피드',
   'nav.settings': '설정',
-  'app.saveError': '브라우저에 저장할 수 없습니다.',
 
   'feed.titleFirst': '구독한 글을',
   'feed.titleSecond': '한곳에서.',
@@ -19,6 +18,7 @@ const ko: Record<MessageKey, string> = {
   'feed.failed': '피드를 불러오지 못했습니다. 주소와 연결을 확인하세요.',
   'feed.duplicate': '이미 구독한 피드입니다.',
   'feed.busy': '불러오는 중…',
+  'feed.loadFailed': '피드 목록을 불러오지 못했습니다: {error}',
   'feed.updated': '피드를 업데이트했습니다.',
 
   'reader.back': '피드로 돌아가기',
@@ -38,6 +38,8 @@ const ko: Record<MessageKey, string> = {
   'settings.subscriptions': '구독 목록',
   'settings.remove': '구독 해제',
   'settings.cancel': '취소',
+  'settings.saveFailed': '설정을 저장하지 못했습니다: {error}',
+  'settings.removeFailed': '구독을 해제하지 못했습니다: {error}',
   'settings.confirm': '해제 확인',
 }
 

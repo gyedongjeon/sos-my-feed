@@ -11,6 +11,9 @@ from urllib.parse import urljoin, urlsplit
 
 LIMIT = 4 * 1024 * 1024
 
+# What reading a feed or an article raises when the address, the network, or the content is at fault.
+UNREADABLE = (ValueError, OSError, http.client.HTTPException, ET.ParseError)
+
 
 def download(url):
     data, final_url, _ = fetch_public(url)

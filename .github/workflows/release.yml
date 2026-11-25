@@ -1,3 +1,5 @@
+# Builds the macOS and Windows installers and publishes a GitHub Release when a version tag is pushed.
+# See docs/git-workflow/versioning.md for when and how to tag.
 name: Release
 
 on:
@@ -7,65 +9,95 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: release-${{ github.ref }}
-  cancel-in-progress: false
-
 jobs:
-  checks:
+  test:
+    name: Test
     uses: ./.github/workflows/ci.yml
 
-  installers:
-    uses: ./.github/workflows/installers.yml
-
   release:
-    needs: [checks, installers]
-    runs-on: ubuntu-latest
+    name: Build and publish the dmg
+    needs: test
+    # Apple Silicon runner: the installer is built for arm64.
+    runs-on: macos-latest
     permissions:
       contents: write
     env:
       TAG: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check that the tag matches the version in every package
+        run: .github/scripts/check-version.sh "$TAG"
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            frontend/package-lock.json
+            desktop/package-lock.json
 
-      - name: Verify version
+      - name: Install dependencies
         run: |
-          node <<'JS'
-          const assert = require('node:assert/strict')
-          const {version} = require('./frontend/package.json')
-          const lock = require('./frontend/package-lock.json')
-          assert.match(version, /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/)
-          assert.equal(process.env.TAG, 'v' + version)
-          assert.equal(lock.version, version)
-          assert.equal(lock.packages[''].version, version)
-          JS
+          npm ci --prefix frontend
+          npm ci --prefix desktop
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: reader-frontend
-          path: frontend/dist
+      - name: Build the installer
+        working-directory: desktop
+        # electron-builder must not publish by itself: `--publish never` here, `"publish": null`
+        # in package.json, and no GitHub token in this step's environment.
+        run: npm run dist -- --publish never
 
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: installer-*
-          path: installers
-          merge-multiple: true
+      - name: Write the release notes
+        run: .github/scripts/release-notes.sh "$TAG" desktop/release/*.dmg > release-notes.md
 
-      - name: Package reader
-        run: |
-          zip -qr "sos-my-feed-$TAG.zip" backend/server.py backend/feeds.py backend/articles.py frontend/dist LICENSE README.md README.ko.md
-
-      - name: Publish GitHub Release
+      - name: Publish the release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          version=${TAG#v}
-          assets=("sos-my-feed-$TAG.zip" "installers/SOS-My-Feed-$version-arm64.dmg" "installers/SOS-My-Feed-Setup-$version-x64.exe")
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" "${assets[@]}" --clobber
+          # A re-run for the same tag replaces the installer instead of failing.
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" desktop/release/*.dmg desktop/release/*-mac.zip --clobber
           else
-            gh release create "$TAG" "${assets[@]}" --verify-tag --title "$TAG" --generate-notes
+            # The dmg is for installing by hand; the zip is what the app downloads to update itself.
+            gh release create "$TAG" desktop/release/*.dmg desktop/release/*-mac.zip \
+              --verify-tag --title "$TAG" --notes-file release-notes.md --generate-notes
           fi
+
+  windows:
+    name: Build and add the Windows installer
+    # After the release exists: the installer is added to it.
+    needs: release
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        shell: bash
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            frontend/package-lock.json
+            desktop/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm ci --prefix frontend
+          npm ci --prefix desktop
+
+      - name: Build the installer
+        working-directory: desktop
+        run: npm run dist -- --publish never
+
+      - name: Add the installer to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$TAG" desktop/release/*.exe --clobber
+

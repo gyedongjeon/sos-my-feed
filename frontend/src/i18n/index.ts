@@ -18,7 +18,8 @@ export const PAGE_LANGUAGES = Object.keys(MESSAGES) as PageLanguage[]
 // English where there is no store to ask (a function used on its own, as in a test).
 const language = () => (getActivePinia() ? useSettingsStore().language : 'en')
 
-/** A text of the pages in the chosen language. */
-export function t(key: MessageKey): string {
-  return (MESSAGES[language()] ?? en)[key] ?? en[key]
+/** A text of the pages in the chosen language, with `{name}` filled in from `values`. */
+export function t(key: MessageKey, values: Record<string, string | number> = {}): string {
+  const text = (MESSAGES[language()] ?? en)[key] ?? en[key]
+  return text.replace(/\{(\w+)\}/g, (whole, name: string) => (name in values ? String(values[name]) : whole))
 }

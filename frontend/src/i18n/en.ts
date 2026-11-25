@@ -1,8 +1,8 @@
 // Every text of the pages, in English. The other languages (`ko.ts`) have the same keys.
+// "{name}" is filled in.
 export default {
   'nav.feed': 'My feed',
   'nav.settings': 'Settings',
-  'app.saveError': 'Unable to save to this browser.',
 
   'feed.titleFirst': 'Your subscriptions,',
   'feed.titleSecond': 'in one place.',
@@ -17,6 +17,7 @@ export default {
   'feed.failed': 'Could not load the feed. Check its URL and your connection.',
   'feed.duplicate': 'Already subscribed.',
   'feed.busy': 'Loading…',
+  'feed.loadFailed': 'Could not load your feeds: {error}',
   'feed.updated': 'Feeds updated.',
 
   'reader.back': 'Back to feed',
@@ -36,5 +37,7 @@ export default {
   'settings.subscriptions': 'Subscriptions',
   'settings.remove': 'Unsubscribe',
   'settings.cancel': 'Cancel',
+  'settings.saveFailed': 'Could not save the setting: {error}',
+  'settings.removeFailed': 'Could not unsubscribe: {error}',
   'settings.confirm': 'Confirm removal',
 }
