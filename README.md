@@ -21,7 +21,7 @@ python3 backend/server.py
 ```
 
 Open http://127.0.0.1:8000, paste a public RSS or Atom feed URL, then subscribe.
-Select a source or view all posts by date. Open an article to read the original.
+Select a source or view all posts by date. Select an article to read it in the app. Turn pages with the Previous and Next buttons or arrow keys, and adjust the text size with A− and A+. When the original text is unavailable, the reader shows the saved feed summary if available.
 Refresh retrieves the current feed entries (up to 100 per source). A failed refresh retains the previous entries.
 Settings includes subscription removal, English and Korean, and system, light and dark themes.
 Subscriptions, cached entries and settings are stored in the current browser profile and origin.

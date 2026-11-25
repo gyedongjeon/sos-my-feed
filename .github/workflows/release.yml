@@ -56,7 +56,7 @@ jobs:
 
       - name: Package reader
         run: |
-          zip -qr "sos-my-feed-$TAG.zip" backend/server.py backend/feeds.py frontend/dist LICENSE README.md README.ko.md
+          zip -qr "sos-my-feed-$TAG.zip" backend/server.py backend/feeds.py backend/articles.py frontend/dist LICENSE README.md README.ko.md
 
       - name: Publish GitHub Release
         env:

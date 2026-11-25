@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
+from articles import read_article
 from feeds import download
 
 DIST = Path(__file__).resolve().parents[1] / 'frontend' / 'dist'
@@ -14,7 +15,7 @@ class Reader(SimpleHTTPRequestHandler):
         super().__init__(*args, directory=str(DIST), **kwargs)
 
     def do_POST(self):
-        if self.path != '/api/feed' or self.headers.get_content_type() != 'application/json':
+        if self.path not in ('/api/feed', '/api/article') or self.headers.get_content_type() != 'application/json':
             self.send_error(400)
             return
         try:
@@ -24,10 +25,10 @@ class Reader(SimpleHTTPRequestHandler):
             url = json.loads(self.rfile.read(size))['url']
             if not isinstance(url, str):
                 raise ValueError()
-            result = download(url)
+            result = read_article(url) if self.path == '/api/article' else download(url)
             status = 200
         except (ValueError, KeyError, TypeError, OSError, http.client.HTTPException, ET.ParseError):
-            result = {'error': 'Could not read this feed'}
+            result = {'error': 'Could not read this article' if self.path == '/api/article' else 'Could not read this feed'}
             status = 422
         body = json.dumps(result).encode()
         self.send_response(status)

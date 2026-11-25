@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue'
+import ArticleReader from './components/ArticleReader.vue'
 import BrandMark from './components/BrandMark.vue'
 import MorseSignal from './components/MorseSignal.vue'
 import { en, ko } from './messages'
 
 interface Article { title: string; url: string; summary: string; date: string }
 interface Feed { title: string; url: string; articles: Article[] }
-interface Library { feeds: Feed[]; language: 'en' | 'ko'; theme: string }
+interface Library { feeds: Feed[]; language: 'en' | 'ko'; theme: string; readerSize?: number }
 
 const initial: Library = { feeds: [], language: navigator.language.startsWith('ko') ? 'ko' : 'en', theme: '' }
 const key = 'sos-my-feed.v1'
@@ -17,6 +18,11 @@ function load(): Library {
 const library = ref(load())
 const t = computed(() => library.value.language === 'ko' ? ko : en)
 const page = ref<'feed' | 'settings'>('feed')
+const selected = ref<{ article: Article; source: string }>()
+const readerSize = computed({
+  get: () => library.value.readerSize ?? 20,
+  set: (size: number) => { library.value.readerSize = size },
+})
 const address = ref('')
 const filter = ref('')
 const removing = ref('')
@@ -107,12 +113,12 @@ function remove(url: string) {
           <button class="btn btn-sm btn-ghost ml-auto" :disabled="busy" @click="refresh">{{ t.refresh }}</button>
         </div>
         <div class="grid gap-3">
-          <a v-for="post in posts" :key="JSON.stringify([post.feed.url,post.article.url])" :href="post.article.url" target="_blank" rel="noopener noreferrer" class="card card-border bg-base-100 transition hover:border-primary">
+          <button v-for="post in posts" :key="JSON.stringify([post.feed.url,post.article.url])" @click="selected = { article: post.article, source: post.feed.title }" aria-haspopup="dialog" class="card card-border text-left bg-base-100 transition hover:border-primary">
             <div class="card-body flex-row items-center gap-4"><div class="min-w-0 grow">
               <p class="text-xs text-base-content/65">{{ post.feed.title }} <span v-if="post.time">· {{ new Date(post.time).toLocaleDateString(library.language) }}</span></p>
               <h2 class="card-title my-1 break-words text-lg">{{ post.article.title }}</h2><p class="line-clamp-2 text-sm text-base-content/70">{{ post.article.summary }}</p>
             </div><span class="text-2xl text-primary" aria-hidden="true">›</span></div>
-          </a>
+          </button>
           <section v-if="!posts.length" class="card card-border bg-base-100"><div class="card-body"><h2 class="card-title">{{ library.feeds.length ? t.noPosts : t.empty }}</h2><p v-if="!library.feeds.length">{{ t.hint }}</p></div></section>
         </div>
       </template>
@@ -132,5 +138,6 @@ function remove(url: string) {
         </div></section>
       </template>
     </main>
+    <ArticleReader v-if="selected" :article="selected.article" :source="selected.source" :t="t" v-model:font-size="readerSize" @close="selected = undefined"/>
   </div>
 </template>

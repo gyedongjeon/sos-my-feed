@@ -15,6 +15,7 @@ DisableProgramGroupPage=yes
 [Files]
 Source: "{#PythonDir}\*"; DestDir: "{app}\python"; Flags: recursesubdirs ignoreversion
 Source: "..\..\backend\desktop.py"; DestDir: "{app}\backend"; Flags: ignoreversion
+Source: "..\..\backend\articles.py"; DestDir: "{app}\backend"; Flags: ignoreversion
 Source: "..\..\backend\feeds.py"; DestDir: "{app}\backend"; Flags: ignoreversion
 Source: "..\..\backend\server.py"; DestDir: "{app}\backend"; Flags: ignoreversion
 Source: "..\..\frontend\dist\*"; DestDir: "{app}\frontend\dist"; Flags: recursesubdirs ignoreversion
