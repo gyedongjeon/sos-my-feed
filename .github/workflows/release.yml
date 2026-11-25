@@ -15,8 +15,11 @@ jobs:
   checks:
     uses: ./.github/workflows/ci.yml
 
+  installers:
+    uses: ./.github/workflows/installers.yml
+
   release:
-    needs: checks
+    needs: [checks, installers]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -45,6 +48,12 @@ jobs:
           name: reader-frontend
           path: frontend/dist
 
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: installer-*
+          path: installers
+          merge-multiple: true
+
       - name: Package reader
         run: |
           zip -qr "sos-my-feed-$TAG.zip" backend/server.py backend/feeds.py frontend/dist LICENSE README.md README.ko.md
@@ -53,9 +62,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          asset="sos-my-feed-$TAG.zip"
+          version=${TAG#v}
+          assets=("sos-my-feed-$TAG.zip" "installers/SOS-My-Feed-$version-arm64.dmg" "installers/SOS-My-Feed-Setup-$version-x64.exe")
           if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" "$asset" --clobber
+            gh release upload "$TAG" "${assets[@]}" --clobber
           else
-            gh release create "$TAG" "$asset" --verify-tag --title "$TAG" --generate-notes
+            gh release create "$TAG" "${assets[@]}" --verify-tag --title "$TAG" --generate-notes
           fi

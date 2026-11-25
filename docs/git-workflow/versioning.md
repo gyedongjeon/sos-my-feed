@@ -48,4 +48,4 @@ Commit the change as `chore: release v<version>` and merge through a reviewed PR
 Tag the merge commit on main with `git tag -a v<version> -m "v<version>"` and push that tag.
 Tags are never moved or reused.
 
-A pushed version tag triggers the Release workflow. It verifies the package and lockfile versions, tests the backend, builds the frontend, and publishes a GitHub Release with generated notes and the runnable ZIP. Re-running for the same tag replaces its ZIP.
+A pushed version tag triggers the Release workflow. It verifies the package and lockfile versions, tests the backend, builds the frontend, and publishes a GitHub Release with generated notes, the runnable ZIP, an Apple Silicon DMG, and a Windows x64 Setup EXE. The release job waits for both native installer builds before publishing. Re-running for the same tag replaces its assets.
