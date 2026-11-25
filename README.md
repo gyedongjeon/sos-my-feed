@@ -10,6 +10,8 @@ Too many tabs? A reader for the **RSS and Atom feeds of the news sites and blogs
 running on your own machine. Subscribe to a feed, see every new article in one list, and read
 an article inside the app, page by page.
 
+![My feed in SOS My Feed: the articles of three feeds in one list, newest first](docs/images/feed.png)
+
 Part of the SOS series, next to [SOS My Language](https://github.com/gyedongjeon/sos-my-language).
 
 ## Features
@@ -87,6 +89,8 @@ been checked by a native speaker, so a text may read a little oddly (corrections
 Messages of the backend's errors and the dialogs of the desktop app are in English.
 
 ## How it works
+![An article open in the reader of SOS My Feed: two pages side by side on sepia paper, with the menu at the bottom](docs/images/reader.png)
+
 - **My feed** lists the articles of every feed by date, newest first; the buttons above the
   list show one feed only. **Refresh** reads every feed again and takes the entries it holds now
   (up to 100 per feed). A feed that cannot be read keeps the entries it had and is named.
