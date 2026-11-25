@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" fill="none">
+  <defs>
+    <linearGradient id="sea" x2="0" y2="1">
+      <stop stop-color="#1e3158"/><stop offset="1" stop-color="#0f1a31"/>
+    </linearGradient>
+    <linearGradient id="signal" x1="512" y1="232" x2="512" y2="792" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff6a2b"/><stop offset="1" stop-color="#ec4a12"/>
+    </linearGradient>
+  </defs>
+  <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#sea)"/>
+  <rect x="102" y="102" width="820" height="820" rx="184" stroke="#fff" stroke-opacity=".08" stroke-width="4"/>
+  <circle cx="512" cy="528" r="232" stroke="#060b17" stroke-opacity=".35" stroke-width="106"/>
+  <circle cx="512" cy="512" r="232" stroke="url(#signal)" stroke-width="106"/>
+  <circle cx="512" cy="512" r="232" stroke="#fbf8f3" stroke-width="106" stroke-dasharray="182.21 182.21" stroke-dashoffset="91.11"/>
+  <g stroke="#fbf8f3" stroke-width="34" stroke-linecap="round">
+    <path d="M440 414a170 170 0 0 1 170 170"/>
+    <path d="M440 485a99 99 0 0 1 99 99"/>
+  </g>
+  <circle cx="445" cy="579" r="23" fill="#ff6a2b"/>
+</svg>
