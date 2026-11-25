@@ -18,6 +18,13 @@ describe('the texts of the pages', () => {
     expect(t('nav.settings')).toBe('설정')
   })
 
+  it('have their names filled in', () => {
+    useSettingsStore().language = 'en'
+    expect(t('settings.saveFailed', { error: 'disk full' })).toBe('Could not save the setting: disk full')
+    useSettingsStore().language = 'ko'
+    expect(t('settings.saveFailed', { error: 'disk full' })).toBe('설정을 저장하지 못했습니다: disk full')
+  })
+
   it('are written in English and Korean, with the same keys', () => {
     expect(PAGE_LANGUAGES).toEqual(['en', 'ko'])
     expect(Object.keys(ko).sort()).toEqual(Object.keys(en).sort())

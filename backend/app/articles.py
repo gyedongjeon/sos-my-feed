@@ -2,7 +2,20 @@
 import re
 from html.parser import HTMLParser
 
-from .feeds import fetch_public
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel, Field
+
+from .feeds import UNREADABLE, fetch_public
+
+router = APIRouter(prefix="/api")
+
+
+class ArticleRequest(BaseModel):
+    url: str = Field(min_length=1, max_length=2000)
+
+
+class ArticleText(BaseModel):
+    paragraphs: list[str]
 
 
 class ArticleParser(HTMLParser):
@@ -93,3 +106,12 @@ def read_article(url):
     parser.feed(html)
     parser.close()
     return {'paragraphs': parser.paragraphs()}
+
+
+@router.post("/article", response_model=ArticleText)
+def article(body: ArticleRequest) -> ArticleText:
+    try:
+        return ArticleText(**read_article(body.url))
+    except UNREADABLE as e:
+        # The page is gone, is not HTML, or has no text to read; the reader shows the feed's summary.
+        raise HTTPException(status_code=502, detail="Could not read this article.") from e

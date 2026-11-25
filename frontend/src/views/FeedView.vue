@@ -42,12 +42,12 @@ async function subscribe() {
 
     <div v-if="feeds.feeds.length" class="mb-3 flex flex-wrap items-center gap-2">
       <button
-        v-for="item in [{ title: t('feed.all'), url: '' }, ...feeds.feeds]"
-        :key="item.url"
+        v-for="item in [{ title: t('feed.all'), id: null }, ...feeds.feeds]"
+        :key="item.id ?? 0"
         class="btn btn-sm max-w-full truncate rounded-full"
-        :aria-pressed="feeds.filter === item.url"
-        :class="feeds.filter === item.url ? 'btn-primary' : 'bg-base-100'"
-        @click="feeds.filter = item.url"
+        :aria-pressed="feeds.filter === item.id"
+        :class="feeds.filter === item.id ? 'btn-primary' : 'bg-base-100'"
+        @click="feeds.filter = item.id"
       >
         {{ item.title }}
       </button>
@@ -57,7 +57,7 @@ async function subscribe() {
     <div class="grid gap-3">
       <button
         v-for="post in feeds.posts"
-        :key="JSON.stringify([post.feed.url, post.article.url])"
+        :key="`${post.feed.id} ${post.article.url}`"
         aria-haspopup="dialog"
         class="card card-border bg-base-100 text-left transition hover:border-primary"
         @click="selected = post"
@@ -83,9 +83,10 @@ async function subscribe() {
 
     <ArticleReader
       v-if="selected"
-      v-model:font-size="settings.readerSize"
+      :font-size="settings.readerSize"
       :article="selected.article"
       :source="selected.feed.title"
+      @update:font-size="settings.setReaderSize"
       @close="selected = undefined"
     />
   </main>

@@ -1,15 +1,27 @@
-"""Run after building the frontend, with Python Playwright and Chrome installed."""
-import json
+"""Reads articles in Chrome, against the real backend with the web replaced by fixtures.
+
+Run after building the frontend, with Chrome installed:
+    uv run --project backend --with playwright==1.58.0 python frontend/tests/article_reader.py
+"""
+import os
+import socket
 import sys
+import tempfile
+import time
 from email.message import Message
 from pathlib import Path
 from threading import Thread
 from unittest.mock import patch
+from urllib.request import urlopen
 
+import uvicorn
 from playwright.sync_api import expect, sync_playwright
 
+# The app reads this when it is imported, so it is set before any `app` import.
+os.environ["SOS_MY_FEED_DATA_DIR"] = tempfile.mkdtemp(prefix="sos-my-feed-browser-")
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'backend'))
-from server import Reader, ThreadingHTTPServer
+from app.main import app  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
 
 
 def fixture_article(url):
@@ -21,17 +33,23 @@ def fixture_article(url):
     return ('<article>' + ''.join(paragraphs) + '</article>').encode(), url, headers
 
 
-def check_reader(page, url):
+def fixture_feed(url):
     entries = [
         dict(title=title, url='https://example.org/' + path, date='', summary='Saved excerpt.')
         for title, path in [('Long article', 'long'), ('Offline article', 'offline')]
     ]
-    library = dict(language='en', theme='sos', feeds=[
-        dict(url='https://example.org/feed', title='Source', articles=entries)
-    ])
+    return dict(title='Source', articles=entries)
+
+
+def subscribe():
+    """What the reader did before: chose English and the light theme, and subscribed to a feed."""
+    with TestClient(app) as client:
+        assert client.put('/api/settings', json=dict(language='en', theme='sos', reader_size=20)).status_code == 200
+        assert client.post('/api/feeds', json=dict(url='https://example.org/feed')).status_code == 201
+
+
+def check_reader(page, url):
     page.goto(url)
-    page.evaluate("(data) => localStorage.setItem('sos-my-feed.v1', JSON.stringify(data))", library)
-    page.reload()
     opener = page.get_by_role('button', name='Source Long article')
     opener.click()
     dialog = page.get_by_role('dialog')
@@ -72,13 +90,28 @@ def check_reader(page, url):
 
 
 if __name__ == '__main__':
-    with patch('articles.fetch_public', side_effect=fixture_article), sync_playwright() as playwright:
-        with ThreadingHTTPServer(('127.0.0.1', 0), Reader) as server:
-            Thread(target=server.serve_forever, daemon=True).start()
-            try:
-                browser = playwright.chromium.launch(channel='chrome')
-                page = browser.new_page(viewport=dict(width=990, height=750))
-                check_reader(page, f'http://127.0.0.1:{server.server_port}/')
-                browser.close()
-            finally:
-                server.shutdown()
+    with socket.socket() as probe:
+        probe.bind(('127.0.0.1', 0))
+        port = probe.getsockname()[1]
+    server = uvicorn.Server(uvicorn.Config(app, host='127.0.0.1', port=port, log_level='warning'))
+    with (
+        patch('app.articles.fetch_public', side_effect=fixture_article),
+        patch('app.subscriptions.download', side_effect=fixture_feed),
+        sync_playwright() as playwright,
+    ):
+        subscribe()
+        Thread(target=server.run, daemon=True).start()
+        address = f'http://127.0.0.1:{port}/'
+        try:
+            for _ in range(100):
+                try:
+                    urlopen(address + 'api/health')
+                    break
+                except OSError:
+                    time.sleep(0.1)
+            browser = playwright.chromium.launch(channel='chrome')
+            page = browser.new_page(viewport=dict(width=990, height=750))
+            check_reader(page, address)
+            browser.close()
+        finally:
+            server.should_exit = True

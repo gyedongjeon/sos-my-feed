@@ -1,15 +1,13 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
+import { onMounted, watchEffect } from 'vue'
 import BrandMark from './components/BrandMark.vue'
 import { t } from './i18n'
-import { saveLibrary } from './storage'
 import { useFeedsStore } from './stores/feeds'
 import { useSettingsStore } from './stores/settings'
 
 const settings = useSettingsStore()
 const feeds = useFeedsStore()
 const LINK = 'hover:bg-neutral-content/10'
-const storageError = ref(false)
 
 watchEffect(() => {
   document.documentElement.lang = settings.language
@@ -17,10 +15,9 @@ watchEffect(() => {
   else delete document.documentElement.dataset.theme
 })
 
-// Every change of the subscriptions or the preferences is kept in the browser.
-watchEffect(() => {
-  const { language, theme, readerSize } = settings
-  storageError.value = !saveLibrary({ feeds: feeds.feeds, language, theme, readerSize })
+onMounted(() => {
+  void settings.load()
+  void feeds.load()
 })
 </script>
 
@@ -38,7 +35,9 @@ watchEffect(() => {
         </ul>
       </div>
     </nav>
-    <p v-if="storageError" role="alert" class="alert alert-warning alert-soft mx-auto mt-4 max-w-3xl">{{ t('app.saveError') }}</p>
+    <div v-if="settings.error || feeds.error" role="alert" class="alert alert-error alert-soft mx-auto mt-4 max-w-3xl">
+      {{ settings.error || feeds.error }}
+    </div>
     <RouterView />
   </div>
 </template>

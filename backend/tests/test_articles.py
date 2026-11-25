@@ -23,3 +23,21 @@ def test_related_links_and_media_controls_are_excluded_from_news_text():
         '<div data-block="promoList">Other headlines</div></article>'
     )
     assert parser.paragraphs() == ["News."]
+
+
+def test_the_text_of_an_article_is_answered(client, monkeypatch):
+    headers = Message()
+    headers["Content-Type"] = "text/html"
+    monkeypatch.setattr(articles, "fetch_public", lambda url: (b"<article><p>News.</p></article>", url, headers))
+    response = client.post("/api/article", json={"url": "https://example.org/story"})
+    assert response.json() == {"paragraphs": ["News."]}
+
+
+def test_an_article_that_cannot_be_read_is_reported(client, monkeypatch):
+    def offline(url):
+        raise OSError("offline")
+
+    monkeypatch.setattr(articles, "fetch_public", offline)
+    response = client.post("/api/article", json={"url": "https://example.org/story"})
+    assert response.status_code == 502
+    assert response.json()["detail"] == "Could not read this article."

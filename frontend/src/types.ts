@@ -1,7 +1,10 @@
-// The shapes of what the backend answers and what the browser keeps.
+// The shapes of what the backend answers.
 
 /** A language the pages are written in. */
 export type PageLanguage = 'en' | 'ko'
+
+/** A theme of the pages by its daisyUI name; empty follows the system. */
+export type Theme = '' | 'sos' | 'sos-night'
 
 export interface Article {
   title: string
@@ -12,17 +15,23 @@ export interface Article {
 }
 
 export interface Feed {
-  title: string
+  id: number
   /** The address subscribed to; no two feeds share one. */
   url: string
+  title: string
   articles: Article[]
 }
 
-/** Everything the browser keeps: the subscriptions with their articles, and the preferences. */
-export interface Library {
+/** What a refresh came to: every feed as it is now, and the titles of those that could not be read. */
+export interface Refreshed {
   feeds: Feed[]
-  language: PageLanguage
-  /** A daisyUI theme name; empty follows the system. */
-  theme: string
-  readerSize?: number
+  failed: string[]
+}
+
+export interface Settings {
+  /** null until the reader, or the browser's language on the first visit, has chosen one. */
+  language: PageLanguage | null
+  theme: Theme
+  /** The size of an article's text, in pixels. */
+  reader_size: number
 }
