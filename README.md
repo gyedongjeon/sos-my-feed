@@ -106,7 +106,7 @@ Messages of the backend's errors and the dialogs of the desktop app are in Engli
     - **Close**, as does the Escape key.
 - The first article opens with a short guide to these, until it is finished or "Don't show
   again" is ticked.
-- **Settings** lists the subscriptions, with **Unsubscribe** for each.
+- **Settings** lists the subscriptions, with **Unsubscribe** for each, and credits the open-source work the app is built with.
 - The backend reads only public `http` and `https` addresses: an address on your own network or
   machine is refused, so a feed cannot be used to reach what is not on the internet.
 
@@ -190,4 +190,4 @@ Built with FastAPI and SQLite (backend), Vue 3, TypeScript, Vite, Pinia, and Tai
 [MIT](LICENSE). Third-party work shipped in the built app — the libraries and the heading font,
 Bricolage Grotesque (SIL Open Font License 1.1) — is credited in
 [frontend/public/THIRD_PARTY_NOTICES.txt](frontend/public/THIRD_PARTY_NOTICES.txt), which is also served by the app at
-`/THIRD_PARTY_NOTICES.txt`.
+`/THIRD_PARTY_NOTICES.txt` and linked from **Open source** under Settings.
