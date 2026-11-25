@@ -4,8 +4,8 @@ import xml.etree.ElementTree as ET
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from articles import read_article
-from feeds import download
+from app.articles import read_article
+from app.feeds import download
 
 DIST = Path(__file__).resolve().parents[1] / 'frontend' / 'dist'
 

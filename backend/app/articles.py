@@ -2,7 +2,7 @@
 import re
 from html.parser import HTMLParser
 
-from feeds import fetch_public
+from .feeds import fetch_public
 
 
 class ArticleParser(HTMLParser):
