@@ -70,4 +70,4 @@ Intel Mac, Linux용 설치 파일은 아직 없습니다. [소스에서 실행](
 소스에서 실행하는 방법, 테스트, 프로젝트 구조는 [영어 README](README.md)를 참고해 주세요.
 
 ## 라이선스
-[MIT](LICENSE). 앱에 포함된 글꼴과 라이브러리의 라이선스는 [THIRD_PARTY_NOTICES.txt](frontend/public/THIRD_PARTY_NOTICES.txt)에서 볼 수 있습니다.
+[MIT](LICENSE). 앱에 포함된 글꼴과 라이브러리의 라이선스는 [THIRD_PARTY_NOTICES.txt](frontend/public/THIRD_PARTY_NOTICES.txt)와 앱의 설정 화면에서 볼 수 있습니다.

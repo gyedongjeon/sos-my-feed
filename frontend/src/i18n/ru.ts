@@ -68,6 +68,9 @@ const ru: Record<MessageKey, string> = {
   'settings.saveFailed': "Не удалось сохранить настройку: {error}",
   'settings.removeFailed': "Не удалось отписаться: {error}",
   'settings.confirm': "Подтвердить",
+  'settings.openSource': 'Открытый исходный код',
+  'settings.openSourceBody': 'SOS My Feed — программа с открытым исходным кодом под лицензией MIT. В ней использованы перечисленные ниже проекты.',
+  'settings.licenses': 'Полные тексты лицензий',
 }
 
 export default ru

@@ -68,6 +68,9 @@ const zhHant: Record<MessageKey, string> = {
   'settings.saveFailed': "無法儲存設定：{error}",
   'settings.removeFailed': "無法取消訂閱：{error}",
   'settings.confirm': "確認取消訂閱",
+  'settings.openSource': '開放原始碼',
+  'settings.openSourceBody': 'SOS My Feed 是以 MIT 授權條款釋出的開放原始碼軟體，並採用了下列專案的成果。',
+  'settings.licenses': '授權條款全文',
 }
 
 export default zhHant

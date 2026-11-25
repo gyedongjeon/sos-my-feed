@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { CREDITS } from '../credits'
 import { t } from '../i18n'
 import { LANGUAGES } from '../languages'
 import { useFeedsStore } from '../stores/feeds'
@@ -40,7 +41,7 @@ async function remove(id: number) {
       </div>
     </section>
 
-    <section class="card card-border bg-base-100">
+    <section class="card card-border mb-4 bg-base-100">
       <div class="card-body">
         <h2 class="card-title">{{ t('settings.subscriptions') }}</h2>
         <p v-if="!feeds.feeds.length">{{ t('feed.empty') }}</p>
@@ -54,6 +55,27 @@ async function remove(id: number) {
             {{ removing === feed.id ? t('settings.confirm') : t('settings.remove') }}
           </button>
         </div>
+      </div>
+    </section>
+
+    <section class="card card-border bg-base-100">
+      <div class="card-body gap-4">
+        <div>
+          <h2 class="card-title">{{ t('settings.openSource') }}</h2>
+          <p class="text-sm text-base-content/70">{{ t('settings.openSourceBody') }}</p>
+        </div>
+        <ul class="list">
+          <li v-for="c in CREDITS" :key="c.name" class="list-row items-center px-0">
+            <div class="list-col-grow">
+              <p class="font-medium">{{ c.name }}</p>
+              <p class="text-xs text-base-content/60">{{ c.copyright }}</p>
+            </div>
+            <span class="badge badge-soft badge-sm">{{ c.license }}</span>
+          </li>
+        </ul>
+        <a class="link text-sm" href="/THIRD_PARTY_NOTICES.txt" target="_blank" rel="noreferrer">
+          {{ t('settings.licenses') }}
+        </a>
       </div>
     </section>
   </main>

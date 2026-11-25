@@ -68,6 +68,9 @@ const ja: Record<MessageKey, string> = {
   'settings.saveFailed': "設定を保存できませんでした: {error}",
   'settings.removeFailed': "購読を解除できませんでした: {error}",
   'settings.confirm': "解除する",
+  'settings.openSource': 'オープンソース',
+  'settings.openSourceBody': 'SOS My Feed は MIT ライセンスのオープンソースです。以下のソフトウェアを利用して作られています。',
+  'settings.licenses': 'ライセンス全文',
 }
 
 export default ja

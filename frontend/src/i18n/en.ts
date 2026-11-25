@@ -66,4 +66,7 @@ export default {
   'settings.saveFailed': 'Could not save the setting: {error}',
   'settings.removeFailed': 'Could not unsubscribe: {error}',
   'settings.confirm': 'Confirm removal',
+  'settings.openSource': 'Open source',
+  'settings.openSourceBody': 'SOS My Feed is open source under the MIT License. It is built with the work below.',
+  'settings.licenses': 'Full license texts',
 }

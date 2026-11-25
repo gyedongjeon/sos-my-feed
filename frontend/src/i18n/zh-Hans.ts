@@ -68,6 +68,9 @@ const zhHans: Record<MessageKey, string> = {
   'settings.saveFailed': "无法保存设置：{error}",
   'settings.removeFailed': "无法取消订阅：{error}",
   'settings.confirm': "确认取消订阅",
+  'settings.openSource': '开源',
+  'settings.openSourceBody': 'SOS My Feed 是采用 MIT 许可证的开源软件，基于以下项目构建。',
+  'settings.licenses': '许可证全文',
 }
 
 export default zhHans

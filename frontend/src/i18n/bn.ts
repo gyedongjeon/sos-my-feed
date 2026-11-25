@@ -68,6 +68,9 @@ const bn: Record<MessageKey, string> = {
   'settings.saveFailed': "সেটিং সংরক্ষণ করা যায়নি: {error}",
   'settings.removeFailed': "সাবস্ক্রিপশন বাতিল করা যায়নি: {error}",
   'settings.confirm': "নিশ্চিত করুন",
+  'settings.openSource': 'ওপেন সোর্স',
+  'settings.openSourceBody': 'SOS My Feed MIT লাইসেন্সের অধীনে ওপেন সোর্স। নিচের কাজগুলো ব্যবহার করে এটি তৈরি।',
+  'settings.licenses': 'লাইসেন্সের পূর্ণ পাঠ',
 }
 
 export default bn

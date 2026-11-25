@@ -143,6 +143,13 @@ def check_reader(page, url):
     page.reload()
     expect(page.get_by_role('heading', name='Subscriptions')).to_be_visible()
 
+    # The settings page credits the work the app is built with, and links the licenses it ships.
+    expect(page.get_by_role('heading', name='Open source')).to_be_visible()
+    expect(page.get_by_text('© 2025 Astral Software Inc.')).to_be_visible()
+    notices = page.get_by_role('link', name='Full license texts').get_attribute('href')
+    with urlopen(url + notices.lstrip('/')) as response:
+        assert b'SIL Open Font License' in response.read()
+
 
 if __name__ == '__main__':
     with socket.socket() as probe:

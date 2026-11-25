@@ -68,6 +68,9 @@ const vi: Record<MessageKey, string> = {
   'settings.saveFailed': "Không lưu được cài đặt: {error}",
   'settings.removeFailed': "Không hủy đăng ký được: {error}",
   'settings.confirm': "Xác nhận",
+  'settings.openSource': 'Mã nguồn mở',
+  'settings.openSourceBody': 'SOS My Feed là phần mềm mã nguồn mở theo Giấy phép MIT. Ứng dụng được xây dựng từ các sản phẩm dưới đây.',
+  'settings.licenses': 'Toàn văn các giấy phép',
 }
 
 export default vi
