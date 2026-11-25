@@ -29,5 +29,5 @@ Subscriptions, cached entries and settings are stored in the current browser pro
 ## Development
 
 Run the backend as above. For frontend hot reload run `cd frontend && npm run dev` and use the URL printed by Vite.
-Run `python3 -m unittest discover -s backend` for offline parser tests and `cd frontend && npm run build` for type checking and bundling.
+Run `python3 -m unittest discover -s backend` for the offline backend tests, `cd frontend && npm test` for the frontend tests (Vitest), and `npm run build` for type checking and bundling.
 See [AGENTS.md](AGENTS.md) for the working agreement and Git workflow.

@@ -14,6 +14,12 @@ class Reader(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(DIST), **kwargs)
 
+    def do_GET(self):
+        # Any path that is not a built file is a client-side route; the Vue router takes it.
+        if not Path(self.translate_path(self.path)).is_file():
+            self.path = '/'
+        super().do_GET()
+
     def do_POST(self):
         if self.path not in ('/api/feed', '/api/article') or self.headers.get_content_type() != 'application/json':
             self.send_error(400)

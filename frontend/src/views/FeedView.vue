@@ -1,0 +1,92 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import ArticleReader from '../components/ArticleReader.vue'
+import MorseSignal from '../components/MorseSignal.vue'
+import { t } from '../i18n'
+import { type Post, useFeedsStore } from '../stores/feeds'
+import { useSettingsStore } from '../stores/settings'
+
+const feeds = useFeedsStore()
+const settings = useSettingsStore()
+const address = ref('')
+// The article open in the reader.
+const selected = ref<Post>()
+
+async function subscribe() {
+  if (await feeds.subscribe(address.value)) address.value = ''
+}
+</script>
+
+<template>
+  <main class="mx-auto max-w-3xl p-4 sm:p-8">
+    <header class="py-8">
+      <MorseSignal />
+      <h1 class="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
+        {{ t('feed.titleFirst') }}<br /><span class="text-primary">{{ t('feed.titleSecond') }}</span>
+      </h1>
+      <p class="mt-3 text-base-content/70">{{ t('feed.intro') }}</p>
+    </header>
+
+    <form class="card card-border bg-base-100" @submit.prevent="subscribe">
+      <div class="card-body gap-3">
+        <label for="address" class="card-title">{{ t('feed.address') }}</label>
+        <div class="flex flex-wrap gap-2">
+          <input id="address" v-model="address" type="url" required placeholder="https://example.org/feed.xml" class="input grow basis-56" />
+          <button class="btn btn-primary" :disabled="feeds.busy">{{ t('feed.subscribe') }}</button>
+        </div>
+      </div>
+    </form>
+    <p role="status" aria-live="polite" class="my-3 text-sm">
+      {{ feeds.busy ? t('feed.busy') : feeds.message ? t(feeds.message) : '' }} {{ feeds.failures.join(', ') }}
+    </p>
+
+    <div v-if="feeds.feeds.length" class="mb-3 flex flex-wrap items-center gap-2">
+      <button
+        v-for="item in [{ title: t('feed.all'), url: '' }, ...feeds.feeds]"
+        :key="item.url"
+        class="btn btn-sm max-w-full truncate rounded-full"
+        :aria-pressed="feeds.filter === item.url"
+        :class="feeds.filter === item.url ? 'btn-primary' : 'bg-base-100'"
+        @click="feeds.filter = item.url"
+      >
+        {{ item.title }}
+      </button>
+      <button class="btn btn-sm btn-ghost ml-auto" :disabled="feeds.busy" @click="feeds.refresh()">{{ t('feed.refresh') }}</button>
+    </div>
+
+    <div class="grid gap-3">
+      <button
+        v-for="post in feeds.posts"
+        :key="JSON.stringify([post.feed.url, post.article.url])"
+        aria-haspopup="dialog"
+        class="card card-border bg-base-100 text-left transition hover:border-primary"
+        @click="selected = post"
+      >
+        <div class="card-body flex-row items-center gap-4">
+          <div class="min-w-0 grow">
+            <p class="text-xs text-base-content/65">
+              {{ post.feed.title }} <span v-if="post.time">· {{ new Date(post.time).toLocaleDateString(settings.language) }}</span>
+            </p>
+            <h2 class="card-title my-1 break-words text-lg">{{ post.article.title }}</h2>
+            <p class="line-clamp-2 text-sm text-base-content/70">{{ post.article.summary }}</p>
+          </div>
+          <span class="text-2xl text-primary" aria-hidden="true">›</span>
+        </div>
+      </button>
+      <section v-if="!feeds.posts.length" class="card card-border bg-base-100">
+        <div class="card-body">
+          <h2 class="card-title">{{ feeds.feeds.length ? t('feed.noPosts') : t('feed.empty') }}</h2>
+          <p v-if="!feeds.feeds.length">{{ t('feed.hint') }}</p>
+        </div>
+      </section>
+    </div>
+
+    <ArticleReader
+      v-if="selected"
+      v-model:font-size="settings.readerSize"
+      :article="selected.article"
+      :source="selected.feed.title"
+      @close="selected = undefined"
+    />
+  </main>
+</template>
