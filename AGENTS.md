@@ -30,7 +30,7 @@ Follow Kent Beck's Test-Driven Development and Tidy First.
     - Tidy only what makes the next change easier; keep each tidying small.
 - **Running the tests**:
     - Backend: `python3 -m unittest discover -s backend`. Use offline RSS and Atom fixtures.
-    - Frontend: `cd frontend && npm ci && npm run build` checks types and builds the UI.
+    - Frontend: `cd frontend && npm test` (Vitest), and `npm run build` for the type check.
     - GitHub Actions runs these checks when a PR into `main` is opened, reopened, or updated. The release workflow calls the same CI workflow.
 
 ## Worklog (MANDATORY for every PR)
@@ -43,9 +43,9 @@ Follow Kent Beck's Test-Driven Development and Tidy First.
 
 ## Project Mission
 - **Project**: SOS My Feed is a local RSS and Atom reader for news and blogs in the SOS series.
-- **Architecture**: The Python backend fetches and parses public feeds. The Vue 3 and TypeScript frontend stores subscriptions, cached articles, and preferences in browser local storage.
+- **Architecture**: The Python backend fetches and parses public feeds. The Vue 3 and TypeScript frontend (Vite, Vue Router, Pinia) stores subscriptions, cached articles, and preferences in browser local storage.
 - **Design**: Use the shared SOS light and dark themes, daisyUI components, life ring and Morse motif from the language app.
-- **Languages**: Keep English and Korean interface strings together in `frontend/src/messages.ts`.
+- **Texts of the pages**: the pages are shown in English or Korean. No page or store may contain a fixed text for the reader: add a key to `frontend/src/i18n/en.ts` and to every other language file, and use `t('key')`.
 - **Scope**: Runs locally for a single user.
 
 ## Operational Preferences

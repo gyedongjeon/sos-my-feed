@@ -64,6 +64,12 @@ def check_reader(page, url):
     assert len(page.context.pages) == 1
     assert page.url == url
 
+    # The settings page has an address of its own, which opens it directly.
+    page.get_by_role('link', name='Settings').click()
+    assert page.url == url + 'settings'
+    page.reload()
+    expect(page.get_by_role('heading', name='Subscriptions')).to_be_visible()
+
 
 if __name__ == '__main__':
     with patch('articles.fetch_public', side_effect=fixture_article), sync_playwright() as playwright:
