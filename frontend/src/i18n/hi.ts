@@ -68,6 +68,9 @@ const hi: Record<MessageKey, string> = {
   'settings.saveFailed': "सेटिंग सहेजी नहीं जा सकी: {error}",
   'settings.removeFailed': "सदस्यता नहीं छोड़ी जा सकी: {error}",
   'settings.confirm': "पुष्टि करें",
+  'settings.openSource': 'ओपन सोर्स',
+  'settings.openSourceBody': 'SOS My Feed, MIT लाइसेंस के तहत ओपन सोर्स है। इसे नीचे दिए गए प्रोजेक्ट की मदद से बनाया गया है।',
+  'settings.licenses': 'लाइसेंस के पूरे टेक्स्ट',
 }
 
 export default hi

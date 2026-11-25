@@ -68,6 +68,9 @@ const th: Record<MessageKey, string> = {
   'settings.saveFailed': "บันทึกการตั้งค่าไม่ได้: {error}",
   'settings.removeFailed': "เลิกติดตามไม่ได้: {error}",
   'settings.confirm': "ยืนยัน",
+  'settings.openSource': 'โอเพนซอร์ส',
+  'settings.openSourceBody': 'SOS My Feed เป็นโอเพนซอร์สภายใต้สัญญาอนุญาต MIT และสร้างขึ้นด้วยผลงานด้านล่างนี้',
+  'settings.licenses': 'ข้อความสัญญาอนุญาตฉบับเต็ม',
 }
 
 export default th

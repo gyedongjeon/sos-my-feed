@@ -68,6 +68,9 @@ const tr: Record<MessageKey, string> = {
   'settings.saveFailed': "Ayar kaydedilemedi: {error}",
   'settings.removeFailed': "Abonelikten çıkılamadı: {error}",
   'settings.confirm': "Onayla",
+  'settings.openSource': 'Açık kaynak',
+  'settings.openSourceBody': 'SOS My Feed, MIT Lisansı altında açık kaynaklı bir uygulamadır. Aşağıdaki çalışmalar kullanılarak geliştirilmiştir.',
+  'settings.licenses': 'Lisans metinlerinin tamamı',
 }
 
 export default tr

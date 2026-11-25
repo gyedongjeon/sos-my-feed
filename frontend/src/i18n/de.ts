@@ -68,6 +68,9 @@ const de: Record<MessageKey, string> = {
   'settings.saveFailed': "Die Einstellung konnte nicht gespeichert werden: {error}",
   'settings.removeFailed': "Das Abo konnte nicht beendet werden: {error}",
   'settings.confirm': "Beenden bestätigen",
+  'settings.openSource': 'Open Source',
+  'settings.openSourceBody': 'SOS My Feed ist Open Source unter der MIT-Lizenz. Die App baut auf den folgenden Projekten auf.',
+  'settings.licenses': 'Vollständige Lizenztexte',
 }
 
 export default de

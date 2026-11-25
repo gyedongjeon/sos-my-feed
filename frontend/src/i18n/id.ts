@@ -68,6 +68,9 @@ const id: Record<MessageKey, string> = {
   'settings.saveFailed': "Pengaturan tidak dapat disimpan: {error}",
   'settings.removeFailed': "Gagal berhenti berlangganan: {error}",
   'settings.confirm': "Konfirmasi",
+  'settings.openSource': 'Open source',
+  'settings.openSourceBody': 'SOS My Feed adalah perangkat lunak open source berlisensi MIT, dan dibuat dengan karya-karya di bawah ini.',
+  'settings.licenses': 'Teks lisensi lengkap',
 }
 
 export default id

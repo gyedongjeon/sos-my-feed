@@ -67,6 +67,9 @@ const ko: Record<MessageKey, string> = {
   'settings.saveFailed': '설정을 저장하지 못했습니다: {error}',
   'settings.removeFailed': '구독을 해제하지 못했습니다: {error}',
   'settings.confirm': '해제 확인',
+  'settings.openSource': '오픈 소스',
+  'settings.openSourceBody': 'SOS My Feed는 MIT 라이선스의 오픈 소스입니다. 아래의 작업물로 만들어졌습니다.',
+  'settings.licenses': '라이선스 전문',
 }
 
 export default ko

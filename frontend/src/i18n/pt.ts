@@ -68,6 +68,9 @@ const pt: Record<MessageKey, string> = {
   'settings.saveFailed': "Não foi possível salvar a configuração: {error}",
   'settings.removeFailed': "Não foi possível cancelar a assinatura: {error}",
   'settings.confirm': "Confirmar",
+  'settings.openSource': 'Código aberto',
+  'settings.openSourceBody': 'O SOS My Feed é um software de código aberto sob a licença MIT. Ele foi construído com os projetos abaixo.',
+  'settings.licenses': 'Textos completos das licenças',
 }
 
 export default pt

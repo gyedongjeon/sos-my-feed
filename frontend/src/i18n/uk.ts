@@ -68,6 +68,9 @@ const uk: Record<MessageKey, string> = {
   'settings.saveFailed': "Не вдалося зберегти налаштування: {error}",
   'settings.removeFailed': "Не вдалося відписатися: {error}",
   'settings.confirm': "Підтвердити",
+  'settings.openSource': 'Відкритий код',
+  'settings.openSourceBody': 'SOS My Feed — програма з відкритим кодом за ліцензією MIT. Її створено з використанням перелічених нижче розробок.',
+  'settings.licenses': 'Повні тексти ліцензій',
 }
 
 export default uk
