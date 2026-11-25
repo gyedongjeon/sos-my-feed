@@ -43,7 +43,7 @@ def test_saving_replaces_what_was_saved(client):
 def test_settings_the_pages_do_not_have_are_refused(client):
     valid = {**DEFAULTS, "language": "en"}
     wrong_choices = (
-        {"language": "fr"},
+        {"language": "sv"},
         {"theme": "neon"},
         {"reader_theme": "pink"},
         {"reader_size": 13},
@@ -57,3 +57,12 @@ def test_settings_the_pages_do_not_have_are_refused(client):
     for wrong in wrong_choices:
         assert client.put("/api/settings", json={**valid, **wrong}).status_code == 422, wrong
     assert client.get("/api/settings").json() == DEFAULTS
+
+
+PAGE_LANGUAGES = ["en", "ko", "ja", "zh-Hans", "zh-Hant", "es", "fr", "de", "it", "pt",
+                  "pl", "ru", "uk", "tr", "vi", "th", "id", "hi", "bn"]
+
+
+def test_every_language_of_the_pages_can_be_chosen(client):
+    for language in PAGE_LANGUAGES:
+        assert client.put("/api/settings", json={**DEFAULTS, "language": language}).json()["language"] == language

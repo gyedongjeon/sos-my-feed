@@ -1,9 +1,8 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it } from 'vitest'
+import { LANGUAGES } from '../languages'
 import { useSettingsStore } from '../stores/settings'
-import en from './en'
 import { PAGE_LANGUAGES, t } from './index'
-import ko from './ko'
 
 beforeEach(() => setActivePinia(createPinia()))
 
@@ -25,8 +24,11 @@ describe('the texts of the pages', () => {
     expect(t('settings.saveFailed', { error: 'disk full' })).toBe('설정을 저장하지 못했습니다: disk full')
   })
 
-  it('are written in English and Korean, with the same keys', () => {
-    expect(PAGE_LANGUAGES).toEqual(['en', 'ko'])
-    expect(Object.keys(ko).sort()).toEqual(Object.keys(en).sort())
+  it('are written in every language of the pages', () => {
+    expect(PAGE_LANGUAGES).toEqual(LANGUAGES.map((l) => l.code))
+    useSettingsStore().language = 'ja'
+    expect(t('nav.settings')).toBe('設定')
+    useSettingsStore().language = 'de'
+    expect(t('nav.settings')).toBe('Einstellungen')
   })
 })

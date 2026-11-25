@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
 import { api } from '../api'
 import { t } from '../i18n'
+import { browserLanguage as pageLanguageOf } from '../languages'
 import type { PageLanguage, ReaderSettings, Settings, Theme } from '../types'
 
 // The language of the pages matching the browser's language, e.g. "ko-KR" -> Korean.
-const browserLanguage = (): PageLanguage => (navigator.language.toLowerCase().startsWith('ko') ? 'ko' : 'en')
+const browserLanguage = (): PageLanguage => pageLanguageOf(navigator.language)
 
 const DEFAULT_READER: ReaderSettings = { theme: 'light', size: 20, lineHeight: 1.8, marginV: 80, marginH: 40, pages: 1, tutorialSeen: false }
 
