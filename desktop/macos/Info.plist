@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0"><dict>
+<key>CFBundleExecutable</key><string>Reader</string>
+<key>CFBundleIdentifier</key><string>local.sos-my-feed.reader-app</string>
+<key>CFBundleName</key><string>SOS My Feed</string>
+<key>CFBundleIconFile</key><string>icon.icns</string>
+<key>CFBundlePackageType</key><string>APPL</string>
+<key>CFBundleShortVersionString</key><string>VERSION</string>
+<key>CFBundleVersion</key><string>VERSION</string>
+<key>LSMinimumSystemVersion</key><string>13.0</string>
+</dict></plist>

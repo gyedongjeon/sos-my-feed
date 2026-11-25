@@ -4,6 +4,13 @@ A local reader for RSS and Atom news and blog feeds in the SOS app series. [한�
 
 ## Run
 
+Download an installer from [GitHub Releases](https://github.com/gyedongjeon/sos-my-feed/releases).
+
+- **macOS (Apple Silicon)** — Open the DMG, drag SOS My Feed into Applications, and open the app.
+- **Windows (x64)** — Run the Setup EXE, then open SOS My Feed from Start. The reader opens in your default browser. Close its console window to stop the server.
+
+Both installers include Python and the built frontend.
+
 With a release ZIP, extract it and run `python3 backend/server.py` from the extracted folder with Python 3.12. The ZIP includes the built frontend.
 
 To build from source, use Python 3.12 and Node.js 22.12 or later with npm. From the repository root:
