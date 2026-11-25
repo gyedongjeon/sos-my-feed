@@ -14,7 +14,8 @@ Part of the SOS series, next to [SOS My Language](https://github.com/gyedongjeon
 
 ## Features
 - **One list for everything you follow**: the articles of every feed, newest first, or those of one feed.
-- **Reading in the app**: an article opens as plain text, without the page's scripts, ads, or menus, and is turned page by page like a book.
+- **Reading in the app, like a book**: an article opens as plain text, without the page's scripts, ads, or menus, in the manner of the [Re:Leaf](https://github.com/gyedongjeon/releaf) reader: pages instead of scrolling, one or two at a time, turned with a tap on either side.
+- **Paper to your taste**: six background colors, and the text size, line spacing, and margins you choose.
 - **Yours to keep**: the subscriptions, their articles, and your settings are stored in a file on your computer. There is no account and no server besides the one the app runs for itself.
 - **English and Korean pages**, with a light and a dark theme.
 
@@ -86,11 +87,22 @@ The language and the theme (system, light, or dark) can be changed under Setting
 - **My feed** lists the articles of every feed by date, newest first; the buttons above the
   list show one feed only. **Refresh** reads every feed again and takes the entries it holds now
   (up to 100 per feed). A feed that cannot be read keeps the entries it had and is named.
-- Selecting an article opens it in the reader. The backend fetches the page, takes its text
-  without loading its scripts or images, and the reader lays it out in pages: turn them with
-  **Previous** and **Next** or the arrow keys, and change the text size with **A−** and **A+**.
-  When the page cannot be read (it is gone, needs a login, or builds its text with JavaScript),
-  the reader shows the summary the feed gave.
+- Selecting an article opens it in the reader. The backend fetches the page and takes its text
+  (paragraphs, headings, and quotations) without loading its scripts or images, and the reader
+  lays it out in pages. When the page cannot be read (it is gone, needs a login, or builds its
+  text with JavaScript), the reader shows the summary the feed gave.
+- **Turning pages**: tap or click the left or right fifth of the window, or use the arrow keys,
+  Page Up and Page Down, or the space bar. A tap in the middle shows or hides the menu at the
+  bottom, which has the page number, buttons for the previous and next page, and:
+    - **View settings**: the background color (white, sepia, mint, forest, gray, dark), the text
+      size, the line spacing, the vertical and horizontal margins, and whether one page or two
+      side by side are shown. Two pages need a window at least 720 pixels wide; a narrower one
+      shows one page. The choices are saved.
+    - **Download as Markdown**: saves the article's text as a `.md` file named by the date and
+      the title, with the title, address, and date in a front matter.
+    - **Close**, as does the Escape key.
+- The first article opens with a short guide to these, until it is finished or "Don't show
+  again" is ticked.
 - **Settings** lists the subscriptions, with **Unsubscribe** for each.
 - The backend reads only public `http` and `https` addresses: an address on your own network or
   machine is refused, so a feed cannot be used to reach what is not on the internet.
