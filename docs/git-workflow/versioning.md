@@ -10,7 +10,7 @@ the way they install and run the app.
 
 | Part | Raise it when | Examples |
 | :--- | :--- | :--- |
-| **MAJOR** | A release breaks something the user relies on | Stored subscriptions cannot be read without manual steps; a feature is removed; a new requirement to run the app |
+| **MAJOR** | A release breaks something the user relies on | Saved subscriptions (`app.db`) cannot be read without manual steps; a feature is removed; a new requirement to run the app |
 | **MINOR** | A release adds something and existing use keeps working | A new page, a new provider, a new setting |
 | **PATCH** | A release only fixes or polishes | Bug fixes, wording, styling, dependency updates with no visible change |
 
@@ -39,13 +39,36 @@ While the version is `0.y.z`, the app is still taking shape and anything may cha
 
 ## One Version for the Whole Project
 
-The reader version is recorded in `frontend/package.json` and its lockfile.
+The backend, frontend, and desktop app are released together and always carry the same version.
+It is written in three files, which must match:
+
+- `backend/pyproject.toml` (`version`)
+- `frontend/package.json` (`version`)
+- `desktop/package.json` (`version`) — this one names the built app and its `.dmg`
 
 ## Releasing
 
-Raise the version on a branch with `npm version <version> --no-git-tag-version` inside `frontend/`.
-Commit the change as `chore: release v<version>` and merge through a reviewed PR.
-Tag the merge commit on main with `git tag -a v<version> -m "v<version>"` and push that tag.
-Tags are never moved or reused.
+Versions are raised at release time, not in every PR.
 
-A pushed version tag triggers the Release workflow. It verifies the package and lockfile versions, tests the backend, builds the frontend, and publishes a GitHub Release with generated notes, the runnable ZIP, an Apple Silicon DMG, and a Windows x64 Setup EXE. The release job waits for both native installer builds before publishing. Re-running for the same tag replaces its assets.
+1. On a branch, set the new version in the three files above and refresh the lock files:
+   ```bash
+   (cd frontend && npm version <version> --no-git-tag-version)
+   (cd desktop && npm version <version> --no-git-tag-version)
+   # edit `version` in backend/pyproject.toml, then:
+   (cd backend && uv lock)
+   ```
+2. Commit as `chore: release v<version>` and merge through a PR as usual.
+3. Tag the merge commit on `main` with a `v` prefix and push the tag:
+   ```bash
+   git tag -a v<version> -m "v<version>"
+   git push origin v<version>
+   ```
+
+4. Pushing the tag starts `.github/workflows/release.yml`. It checks that the tag matches the
+   version in the three files, runs the tests, builds the macOS installer (`.dmg`) and the
+   archive the app updates itself from (`.zip`), and publishes a GitHub Release with both
+   attached and generated release notes. Installed apps offer the new version to their users
+   once the release is marked as the latest. If the
+   check or a test fails, nothing is published; fix it on `main` and release a new version.
+
+Tags are never moved or reused. A mistake in a release is fixed by a new version.

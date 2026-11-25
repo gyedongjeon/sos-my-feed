@@ -27,7 +27,7 @@ Our project follows the **GitHub Flow** strategy to ensure simplicity and speed.
 
 7.  **Release by tagging `main`, not by merging.**
     *   Merged work collects on `main` until it is worth releasing; a merge does not release anything by itself.
-    *   A release is a `v`-prefixed version tag on a merge commit of `main`. The tag identifies the release. See [versioning.md](versioning.md).
+    *   A release is a `v`-prefixed version tag on a merge commit of `main`. Pushing the tag builds and publishes the installer. See [versioning.md](versioning.md).
     *   There are no `develop`, `release`, or `hotfix` branches. An urgent fix is a `fix/` branch merged into `main` and released as the next patch version.
 
 ## Branch Naming Convention

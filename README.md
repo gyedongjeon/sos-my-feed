@@ -1,33 +1,177 @@
 # SOS My Feed
 
-A local reader for RSS and Atom news and blog feeds in the SOS app series. [한국어](README.ko.md)
+**English** | [한국어](README.ko.md)
 
-## Run
+[![Release](https://img.shields.io/github/v/release/gyedongjeon/sos-my-feed)](https://github.com/gyedongjeon/sos-my-feed/releases/latest)
+[![CI](https://github.com/gyedongjeon/sos-my-feed/actions/workflows/ci.yml/badge.svg)](https://github.com/gyedongjeon/sos-my-feed/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-Download an installer from [GitHub Releases](https://github.com/gyedongjeon/sos-my-feed/releases).
+Too many tabs? A reader for the **RSS and Atom feeds of the news sites and blogs you follow**,
+running on your own machine. Subscribe to a feed, see every new article in one list, and read
+an article inside the app, page by page.
 
-- **macOS (Apple Silicon)** — Open the DMG, drag SOS My Feed into Applications, and open the app.
-- **Windows (x64)** — Run the Setup EXE, then open SOS My Feed from Start. The reader opens in your default browser. Close its console window to stop the server.
+Part of the SOS series, next to [SOS My Language](https://github.com/gyedongjeon/sos-my-language).
 
-Both installers include Python and the built frontend.
+## Features
+- **One list for everything you follow**: the articles of every feed, newest first, or those of one feed.
+- **Reading in the app**: an article opens as plain text, without the page's scripts, ads, or menus, and is turned page by page like a book.
+- **Yours to keep**: the subscriptions, their articles, and your settings are stored in a file on your computer. There is no account and no server besides the one the app runs for itself.
+- **English and Korean pages**, with a light and a dark theme.
 
-With a release ZIP, extract it and run `python3 backend/server.py` from the extracted folder with Python 3.12. The ZIP includes the built frontend.
+## Install
+Installers for **Apple Silicon Macs** and **64-bit Windows** are attached to each
+[release](https://github.com/gyedongjeon/sos-my-feed/releases/latest).
 
-To build from source, use Python 3.12 and Node.js 22.12 or later with npm. From the repository root:
+### macOS
 
-```sh
-(cd frontend && npm ci && npm run build)
-python3 backend/server.py
+1. Download the `.dmg`, open it, and drag the app to Applications.
+2. The build is not signed with an Apple developer certificate, so macOS blocks it at first. Run
+   this once in Terminal, then open the app:
+   ```bash
+   xattr -cr "/Applications/SOS My Feed.app"
+   ```
+3. The first launch downloads Python and the Python packages (~20 MB of packages), so it needs
+   an internet connection and can take a minute.
+
+Nothing else has to be installed, because the app ships its own [uv](https://docs.astral.sh/uv/).
+
+### Windows
+1. Download `SOS-My-Feed-Setup-<version>.exe` and run it. It installs for your user account
+   only and needs no administrator rights.
+2. The installer is not signed, so Windows shows "Windows protected your PC". Choose
+   **More info**, then **Run anyway**.
+3. The first launch downloads the Python packages (Python itself comes with the installer).
+
+The Windows app has not been tried by hand, only by the automated checks (the backend's tests,
+the server started on the shipped Python, and the installer built). Please open an issue if
+something does not work.
+
+On Intel Macs and Linux there is no installer yet; [run it from source](#run-from-source).
+
+### Where files are kept, and uninstalling
+Everything the installed app puts on disk is in one folder,
+`~/Library/Application Support/SOS My Feed/` (on Windows, `%APPDATA%\SOS My Feed\`):
+
+- `data/` — your subscriptions, their articles, and your settings (`app.db`)
+- `venv/`, `uv-cache/`, `python/` — the Python packages and Python itself, set up on the first launch
+
+To back up or move your subscriptions, copy `data/`. Deleting the app leaves this folder in
+place, so to uninstall completely, move the app to the Trash and then delete that folder.
+
+### Updates
+The installed app asks GitHub for the latest release when it starts. When there is a newer one,
+it offers to update: one click downloads it, replaces the app, and opens it again, with your
+subscriptions and settings kept. You can also choose **SOS My Feed → Check for Updates…**.
+
+- The download is checked against the SHA-256 that GitHub reports for the release file, and only
+  files from this repository's releases are accepted. The app is not signed by Apple, so that
+  check, not an Apple signature, is what the update relies on.
+- If the app cannot replace itself (for example, it was not moved to Applications), it opens the
+  download page instead.
+- On Windows the app tells you about a new version and opens the download page; run the new
+  installer over the old version. Your data is kept.
+
+Versions up to 0.2.0 were a different app (a small window around a local server, with the
+subscriptions kept by the browser). They do not update themselves and their subscriptions are
+not carried over: remove the old app, install the new one, and subscribe again.
+
+## First setup
+Paste the address of an RSS or Atom feed into **Feed URL** and choose **Subscribe**. Most news
+sites and blogs link their feed as "RSS"; copy that link's address.
+
+The pages start in your system's language where they are written in it (English or Korean).
+The language and the theme (system, light, or dark) can be changed under Settings.
+
+## How it works
+- **My feed** lists the articles of every feed by date, newest first; the buttons above the
+  list show one feed only. **Refresh** reads every feed again and takes the entries it holds now
+  (up to 100 per feed). A feed that cannot be read keeps the entries it had and is named.
+- Selecting an article opens it in the reader. The backend fetches the page, takes its text
+  without loading its scripts or images, and the reader lays it out in pages: turn them with
+  **Previous** and **Next** or the arrow keys, and change the text size with **A−** and **A+**.
+  When the page cannot be read (it is gone, needs a login, or builds its text with JavaScript),
+  the reader shows the summary the feed gave.
+- **Settings** lists the subscriptions, with **Unsubscribe** for each.
+- The backend reads only public `http` and `https` addresses: an address on your own network or
+  machine is refused, so a feed cannot be used to reach what is not on the internet.
+
+## Run from source
+You need [uv](https://docs.astral.sh/uv/) and Node.js 22.12 or later. Run the backend and
+frontend in separate terminals, then open http://localhost:5173.
+
+```bash
+# Backend (http://127.0.0.1:8000)
+cd backend
+uv run uvicorn app.main:app --reload
+
+# Frontend (http://localhost:5173)
+cd frontend
+npm install
+npm run dev
 ```
 
-Open http://127.0.0.1:8000, paste a public RSS or Atom feed URL, then subscribe.
-Select a source or view all posts by date. Select an article to read it in the app. Turn pages with the Previous and Next buttons or arrow keys, and adjust the text size with A− and A+. When the original text is unavailable, the reader shows the saved feed summary if available.
-Refresh retrieves the current feed entries (up to 100 per source). A failed refresh retains the previous entries.
-Settings includes subscription removal, English and Korean, and system, light and dark themes.
-Subscriptions, cached entries and settings are stored in the current browser profile and origin.
+### Desktop app
+The desktop app is an Electron window that starts and stops the backend for you.
 
-## Development
+```bash
+cd desktop
+npm install
+npm run dev    # run from this checkout, using backend/data
+npm run dist   # build desktop/release/SOS My Feed-<version>-arm64.dmg
+```
 
-Run the backend as above. For frontend hot reload run `cd frontend && npm run dev` and use the URL printed by Vite.
-Run `python3 -m unittest discover -s backend` for the offline backend tests, `cd frontend && npm test` for the frontend tests (Vitest), and `npm run build` for type checking and bundling.
-See [AGENTS.md](AGENTS.md) for the working agreement and Git workflow.
+`npm run dist` first downloads the uv release pinned in `desktop/scripts/fetch-uv.mjs` (checked
+against its SHA-256) into `desktop/vendor/`, to bundle it into the app, so the built app needs
+nothing else installed. Releases are built and published by GitHub Actions when a version tag is
+pushed; see [docs/git-workflow/versioning.md](docs/git-workflow/versioning.md).
+
+The packaged app keeps its files in `~/Library/Application Support/SOS My Feed/`; see
+[Where files are kept, and uninstalling](#where-files-are-kept-and-uninstalling).
+
+## Tests
+```bash
+cd backend && uv run pytest     # API and logic, against a temporary data folder
+cd frontend && npm test         # unit tests (Vitest)
+cd desktop && npm test          # unit tests (Vitest)
+```
+
+The backend tests never reach the network: feeds and articles are read from fixtures.
+
+One more test reads articles in Chrome against the built frontend and the real backend, since
+turning pages depends on the browser's layout:
+
+```bash
+(cd frontend && npm run build)
+uv run --project backend --with playwright==1.58.0 python frontend/tests/article_reader.py
+```
+
+Opening a pull request into `main`, and every later push to it, runs all of these, the frontend
+build, the desktop type check, and a build of the Windows installer (`.github/workflows/ci.yml`).
+
+## Adding a language for the pages
+The texts of the pages are in `frontend/src/i18n/`: `en.ts` has every text by a key, and a file
+for each other language (`ko.ts`) the same keys in that language.
+
+1. Copy `ko.ts` to a file for the new language and translate the values. `{name}` is filled in
+   and must be kept.
+2. Add its code to `PageLanguage` in `frontend/src/types.ts`, list the file in
+   `frontend/src/i18n/index.ts`, add the language to the selector in
+   `frontend/src/views/SettingsView.vue`, and allow its code in `Settings` of
+   `backend/app/settings.py`.
+3. Run the tests. TypeScript refuses a file that lacks a key.
+
+A page must not contain a fixed text: use `t('key')`.
+
+## Structure
+- `backend/` — FastAPI app. Everything it stores lives in `backend/data/` (git-ignored): the SQLite file `app.db` (subscriptions, their articles, and settings).
+- `frontend/` — Vue 3 app; `src/i18n/` holds the texts of the pages in each language they are written in; `/api` requests are proxied to the backend by Vite. Once built (`npm run build`), the backend serves it too, so http://127.0.0.1:8000 alone runs the whole app.
+- `desktop/` — Electron shell that starts the backend and shows the app in a window.
+
+Built with FastAPI and SQLite (backend), Vue 3, TypeScript, Vite, Pinia, and Tailwind CSS + daisyUI
+(frontend), and Electron (desktop). See [AGENTS.md](AGENTS.md) for the working agreement and Git workflow.
+
+## License
+[MIT](LICENSE). Third-party work shipped in the built app — the libraries and the heading font,
+Bricolage Grotesque (SIL Open Font License 1.1) — is credited in
+[frontend/public/THIRD_PARTY_NOTICES.txt](frontend/public/THIRD_PARTY_NOTICES.txt), which is also served by the app at
+`/THIRD_PARTY_NOTICES.txt`.

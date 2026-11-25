@@ -29,9 +29,11 @@ Follow Kent Beck's Test-Driven Development and Tidy First.
     - Commit structural changes as `refactor:` and behavioral ones as `feat:` or `fix:`, per the commit convention.
     - Tidy only what makes the next change easier; keep each tidying small.
 - **Running the tests**:
-    - Backend: `python3 -m unittest discover -s backend`. Use offline RSS and Atom fixtures.
+    - Backend: `cd backend && uv run pytest`. Tests use a temporary data folder and block network access; read feeds and articles from fixtures instead of fetching them.
     - Frontend: `cd frontend && npm test` (Vitest), and `npm run build` for the type check.
-    - GitHub Actions runs these checks when a PR into `main` is opened, reopened, or updated. The release workflow calls the same CI workflow.
+    - Desktop: `cd desktop && npm test` (Vitest), and `npx tsc --noEmit` for the type check.
+    - Reading in the browser: `uv run --project backend --with playwright==1.58.0 python frontend/tests/article_reader.py`, after building the frontend. It needs Chrome and covers what depends on the browser's layout (turning pages).
+    - `.github/workflows/ci.yml` runs all of these when a pull request into `main` is opened and on every later push to it (it can also be started by hand from the Actions tab). Still run the tests locally before pushing.
 
 ## Worklog (MANDATORY for every PR)
 - Every PR must include exactly one branch-specific worklog file named `docs/worklog/YYYY-MM-DD-<branch-slug>.md`. This count excludes [docs/worklog/_template.md](docs/worklog/_template.md).
@@ -42,11 +44,14 @@ Follow Kent Beck's Test-Driven Development and Tidy First.
 - Never modify another branch's worklog file.
 
 ## Project Mission
-- **Project**: SOS My Feed is a local RSS and Atom reader for news and blogs in the SOS series.
-- **Architecture**: The Python backend fetches and parses public feeds. The Vue 3 and TypeScript frontend (Vite, Vue Router, Pinia) stores subscriptions, cached articles, and preferences in browser local storage.
-- **Design**: Use the shared SOS light and dark themes, daisyUI components, life ring and Morse motif from the language app.
-- **Texts of the pages**: the pages are shown in English or Korean. No page or store may contain a fixed text for the reader: add a key to `frontend/src/i18n/en.ts` and to every other language file, and use `t('key')`.
-- **Scope**: Runs locally for a single user.
+- **Project**: `sos-my-feed` — a local reader for the RSS and Atom feeds of news sites and blogs, for personal use: the reader subscribes to feeds, sees their articles in one list, and reads an article inside the app. It is a sibling of `sos-my-language` in the SOS series and shares its stack, look, and conventions.
+- **Fetching**: feeds and articles are fetched by the backend only, through `fetch_public` in `backend/app/feeds.py`, which refuses addresses that are not public. Do not fetch a reader-supplied address any other way.
+- **Texts of the pages**: the pages are shown in English or Korean. No page or store may contain a fixed text for the reader: add a key to `frontend/src/i18n/en.ts` and to every other language file, and use `t('key')`. Messages of the backend's errors are in English for now.
+- **Architecture**: Separate frontend and backend.
+    - **Backend**: FastAPI (Python) with SQLite as the database. Subscriptions, their articles, and the settings are stored there, not in the browser.
+    - **Frontend**: Vue 3 + TypeScript + Vite, with Vue Router and Pinia. Styling uses Tailwind CSS with daisyUI as the design system; prefer daisyUI component classes and theme colors over custom CSS. Keep the shared SOS light and dark themes and the life ring and Morse motif.
+    - **Desktop**: Electron shell (`desktop/`, TypeScript) that runs the backend, which serves the built frontend.
+- **Scope**: Runs locally for a single user. Do not add deployment, authentication, or multi-user features unless explicitly requested.
 
 ## Operational Preferences
 - **Conciseness**: Be concise and technical in your responses.
