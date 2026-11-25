@@ -46,7 +46,7 @@ Follow Kent Beck's Test-Driven Development and Tidy First.
 ## Project Mission
 - **Project**: `sos-my-feed` — a local reader for the RSS and Atom feeds of news sites and blogs, for personal use: the reader subscribes to feeds, sees their articles in one list, and reads an article inside the app. It is a sibling of `sos-my-language` in the SOS series and shares its stack, look, and conventions.
 - **Fetching**: feeds and articles are fetched by the backend only, through `fetch_public` in `backend/app/feeds.py`, which refuses addresses that are not public. Do not fetch a reader-supplied address any other way.
-- **Texts of the pages**: the pages are shown in English or Korean. No page or store may contain a fixed text for the reader: add a key to `frontend/src/i18n/en.ts` and to every other language file, and use `t('key')`. Messages of the backend's errors are in English for now.
+- **Texts of the pages**: the pages are shown in the 19 languages of `LANGUAGES` in `frontend/src/languages.ts` (those of the SOS series). No page or store may contain a fixed text for the reader: add a key to `frontend/src/i18n/en.ts` and to every other language file, and use `t('key')`. Messages of the backend's errors are in English for now.
 - **Architecture**: Separate frontend and backend.
     - **Backend**: FastAPI (Python) with SQLite as the database. Subscriptions, their articles, and the settings are stored there, not in the browser.
     - **Frontend**: Vue 3 + TypeScript + Vite, with Vue Router and Pinia. Styling uses Tailwind CSS with daisyUI as the design system; prefer daisyUI component classes and theme colors over custom CSS. Keep the shared SOS light and dark themes and the life ring and Morse motif.
