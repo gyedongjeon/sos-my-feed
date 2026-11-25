@@ -9,7 +9,7 @@ contents="$image/SOS My Feed.app/Contents"
 resources="$contents/Resources"
 mkdir -p "$contents/MacOS" "$resources/backend" "$resources/frontend" desktop/release
 cp -R "$1" "$resources/python"
-cp backend/{desktop,feeds,server}.py "$resources/backend/"
+cp backend/{articles,desktop,feeds,server}.py "$resources/backend/"
 cp -R frontend/dist "$resources/frontend/"
 cp LICENSE desktop/assets/icon.icns "$resources/"
 sed "s/VERSION/$version/g" desktop/macos/Info.plist > "$contents/Info.plist"

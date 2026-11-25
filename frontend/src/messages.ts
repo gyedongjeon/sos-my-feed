@@ -1,4 +1,6 @@
 export const ko = {
+  back: '피드로 돌아가기', previous: '이전', next: '다음', smaller: '글자 작게', larger: '글자 크게',
+  summaryOnly: '본문을 불러올 수 없어 피드 요약을 표시합니다.', noBody: '읽을 수 있는 본문이나 피드 요약이 없습니다.',
   feed: '내 피드', settings: '설정', first: '구독한 글을', second: '한곳에서.',
   intro: '뉴스와 블로그의 RSS · Atom 피드를 모아 읽으세요.', address: '피드 주소',
   subscribe: '구독하기', refresh: '새로고침', all: '전체', empty: '첫 피드를 구독해 보세요.',
@@ -9,6 +11,8 @@ export const ko = {
   cancel: '취소', confirm: '해제 확인', updated: '피드를 업데이트했습니다.'
 }
 export const en: typeof ko = {
+  back: 'Back to feed', previous: 'Previous', next: 'Next', smaller: 'Decrease text size', larger: 'Increase text size',
+  summaryOnly: 'The full article is unavailable. Showing the feed summary.', noBody: 'No article text or feed summary is available.',
   feed: 'My feed', settings: 'Settings', first: 'Your subscriptions,', second: 'in one place.',
   intro: 'Read news and blogs from your RSS and Atom subscriptions.', address: 'Feed URL',
   subscribe: 'Subscribe', refresh: 'Refresh', all: 'All', empty: 'Subscribe to your first feed.',
