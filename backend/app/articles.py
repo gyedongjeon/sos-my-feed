@@ -1,7 +1,7 @@
 """Extract plain reading text from a public article without loading its resources."""
 import re
 from html.parser import HTMLParser
-from typing import Literal
+from typing import Literal, NamedTuple
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
@@ -25,6 +25,12 @@ class ArticleText(BaseModel):
     blocks: list[Block]
 
 
+class State(NamedTuple):
+    """What holds inside an element: whether its text is left out, and the group it is read into."""
+    hidden: bool
+    group: int
+
+
 class ArticleParser(HTMLParser):
     block_tags = set('article main section div p br hr h2 h3 h4 h5 h6 li blockquote pre'.split())
     ignored = set('head header footer nav aside script style template noscript form button iframe svg h1'.split())
@@ -37,9 +43,16 @@ class ArticleParser(HTMLParser):
         self.stack = []
         self.groups = [[]]
         self.ranks = [0]
-        self.group = 0
-        self.hidden = False
+        self.state = State(hidden=False, group=0)
         self.fragments = []
+
+    @property
+    def hidden(self):
+        return self.state.hidden
+
+    @property
+    def group(self):
+        return self.state.group
 
     def flush(self):
         line = ' '.join(''.join(self.fragments).split())
@@ -49,7 +62,7 @@ class ArticleParser(HTMLParser):
 
     def kind(self):
         """What the text being collected is, by the innermost element that says so."""
-        for tag, _, _ in reversed(self.stack):
+        for tag, _ in reversed(self.stack):
             if tag in self.headings:
                 return 'heading'
             if tag == 'blockquote':
@@ -62,9 +75,10 @@ class ArticleParser(HTMLParser):
         if tag in self.void:
             return
         attrs = dict(attrs)
-        self.stack.append((tag, self.hidden, self.group))
-        self.hidden = (self.hidden or tag in self.ignored or 'hidden' in attrs
-                       or attrs.get('aria-hidden') == 'true' or attrs.get('data-block') in self.news_extras)
+        self.stack.append((tag, self.state))
+        hidden = (self.hidden or tag in self.ignored or 'hidden' in attrs
+                  or attrs.get('aria-hidden') == 'true' or attrs.get('data-block') in self.news_extras)
+        self.state = self.state._replace(hidden=hidden)
         if self.hidden:
             return
         if attrs.get('itemprop') == 'articleBody' or attrs.get('id') in ('dic_area', 'articleBody'):
@@ -77,7 +91,7 @@ class ArticleParser(HTMLParser):
             return
         if rank > self.ranks[self.group]:
             self.flush()
-            self.group = len(self.groups)
+            self.state = self.state._replace(group=len(self.groups))
             self.groups.append([])
             self.ranks.append(rank)
 
@@ -85,11 +99,11 @@ class ArticleParser(HTMLParser):
         if tag in self.void:
             return
         for index in range(len(self.stack) - 1, -1, -1):
-            name, hidden, group = self.stack[index]
+            name, state = self.stack[index]
             if name == tag:
-                if tag in self.block_tags or group != self.group:
+                if tag in self.block_tags or state.group != self.group:
                     self.flush()
-                self.group, self.hidden = group, hidden
+                self.state = state
                 del self.stack[index:]
                 break
 
