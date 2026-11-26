@@ -16,7 +16,7 @@ Part of the SOS series, next to [SOS My Language](https://github.com/gyedongjeon
 
 ## Features
 - **Popular feeds to start from**: 803 feeds in all 19 languages of the pages: well-known news sites by topic (top stories, world, business, technology, science, sports, culture), among them the English editions of outlets from Europe, Korea, Japan, and elsewhere (DW, Le Monde, Yonhap, The Korea Times, Nikkei Asia, …), and the blogs of well-known people, such as Simon Willison, Paul Krugman, or Cory Doctorow. Pick a language and your interests, tick the feeds, and subscribe to them in one go, without copying an address.
-- **One list for everything you follow**: the articles of every feed, newest first, or those of one feed.
+- **One list for everything you follow**: the articles of every feed, newest first, or those of one feed, with how many of them you have not read yet. Show only the unread ones, or mark them all as read at once.
 - **Reading in the app, like a book**: an article opens as its text and pictures, without the page's scripts, ads, or menus, in the manner of the [Re:Leaf](https://github.com/gyedongjeon/releaf) reader: pages instead of scrolling, one or two at a time, turned with a tap on either side. YouTube and Vimeo videos play in the reader; any article, and any other video, opens on the site's own page with one click.
 - **Paper to your taste**: six background colors, and the text size, line spacing, and margins you choose.
 - **Yours to keep**: the subscriptions, their articles, and your settings are stored in a file on your computer. There is no account and no server besides the one the app runs for itself.
@@ -100,6 +100,9 @@ Messages of the backend's errors and the dialogs of the desktop app are in Engli
 - **My feed** lists the articles of every feed by date, newest first; the buttons above the
   list show one feed only. **Refresh** reads every feed again and takes the entries it holds now
   (up to 100 per feed). A feed that cannot be read keeps the entries it had and is named.
+- An article counts as read once it is opened, in the reader or on its site. The dot beside it
+  marks it read or unread by hand, and **Mark all as read** marks every article shown. An article
+  stays read through refreshes until it leaves its feed; if it comes back later, it is unread.
 - Selecting an article opens it in the reader. The backend fetches the page without running its
   scripts and takes its text (paragraphs, headings, and quotations), its pictures with their
   captions, and its videos, and the reader lays them out in pages. When the page cannot be read
