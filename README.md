@@ -15,7 +15,7 @@ an article inside the app, page by page.
 Part of the SOS series, next to [SOS My Language](https://github.com/gyedongjeon/sos-my-language).
 
 ## Features
-- **Popular feeds to start from**: 683 feeds in all 19 languages of the pages: well-known news sites by topic (top stories, world, business, technology, science, sports, culture), and the blogs of well-known people, such as Simon Willison, Paul Krugman, or Cory Doctorow. Pick a language and your interests, tick the feeds, and subscribe to them in one go, without copying an address.
+- **Popular feeds to start from**: 803 feeds in all 19 languages of the pages: well-known news sites by topic (top stories, world, business, technology, science, sports, culture), among them the English editions of outlets from Europe, Korea, Japan, and elsewhere (DW, Le Monde, Yonhap, The Korea Times, Nikkei Asia, …), and the blogs of well-known people, such as Simon Willison, Paul Krugman, or Cory Doctorow. Pick a language and your interests, tick the feeds, and subscribe to them in one go, without copying an address.
 - **One list for everything you follow**: the articles of every feed, newest first, or those of one feed.
 - **Reading in the app, like a book**: an article opens as plain text, without the page's scripts, ads, or menus, in the manner of the [Re:Leaf](https://github.com/gyedongjeon/releaf) reader: pages instead of scrolling, one or two at a time, turned with a tap on either side.
 - **Paper to your taste**: six background colors, and the text size, line spacing, and margins you choose.

@@ -11,6 +11,10 @@ from urllib.parse import urljoin, urlsplit
 
 LIMIT = 4 * 1024 * 1024
 
+# How the app names itself to the sites it reads. Some sites refuse a bare client name but take
+# the form feed readers use, which still says which app is asking and where it comes from.
+USER_AGENT = 'Mozilla/5.0 (compatible; SOS-My-Feed/0.1; +https://github.com/gyedongjeon/sos-my-feed)'
+
 # What reading a feed or an article raises when the address, the network, or the content is at fault.
 UNREADABLE = (ValueError, OSError, http.client.HTTPException, ET.ParseError)
 
@@ -45,7 +49,7 @@ def fetch_public(url):
             path = parts.path or '/'
             if parts.query:
                 path += '?' + parts.query
-            connection.request('GET', path, headers={'User-Agent': 'SOS-My-Feed/0.1'})
+            connection.request('GET', path, headers={'User-Agent': USER_AGENT})
             response = connection.getresponse()
             if response.status in (301, 302, 303, 307, 308) and response.getheader('Location'):
                 url = urljoin(url, response.getheader('Location'))
