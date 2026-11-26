@@ -18,7 +18,9 @@ In `.github/workflows/ci.yml` and `.github/workflows/release.yml`:
 | `actions/checkout` | v4 | v7 |
 | `actions/setup-node` | v4 | v7 |
 | `actions/upload-artifact` | v4 | v7 |
-| `astral-sh/setup-uv` | v5 | v10 |
+| `astral-sh/setup-uv` | v5 | v10.4.0 |
+
+`setup-uv` is pinned to an exact version because it no longer publishes major tags such as `v10` (removed in v8); the first CI run failed with "unable to find version `v10`".
 
 None of the breaking changes in between affect these workflows:
 

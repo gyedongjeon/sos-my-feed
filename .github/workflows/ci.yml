@@ -27,7 +27,7 @@ jobs:
         working-directory: backend
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.4.0
         with:
           enable-cache: true
           cache-dependency-glob: backend/uv.lock
@@ -54,7 +54,7 @@ jobs:
         run: npm test
       - name: Type check and build
         run: npm run build
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.4.0
       - name: Read articles in Chrome
         working-directory: .
         run: uv run --project backend --frozen --with playwright==1.58.0 python frontend/tests/article_reader.py
@@ -92,7 +92,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.4.0
       - name: Run the backend tests
         working-directory: backend
         run: |
