@@ -31,3 +31,23 @@ def test_rss_preserves_publication_date_and_strips_summary_markup():
 def test_html_page_is_rejected():
     with pytest.raises(ValueError):
         parse_feed(b"<html><body/></html>", "https://example.org")
+
+
+def test_requests_name_the_app_in_a_form_sites_accept(monkeypatch):
+    """Some sites refuse a bare client name; the app names itself the way feed readers do."""
+    import http.client
+    import socket
+
+    from app import feeds
+
+    sent = {}
+
+    def request(self, method, path, headers=None, **kwargs):
+        sent.update(headers or {})
+        raise OSError("stop before the network")
+
+    monkeypatch.setattr(socket, "getaddrinfo", lambda *a, **k: [(None, None, None, None, ("93.184.215.14", 443))])
+    monkeypatch.setattr(http.client.HTTPConnection, "request", request)
+    with pytest.raises(OSError):
+        feeds.fetch_public("https://example.org/feed")
+    assert sent["User-Agent"] == "Mozilla/5.0 (compatible; SOS-My-Feed/0.1; +https://github.com/gyedongjeon/sos-my-feed)"
