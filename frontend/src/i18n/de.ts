@@ -32,6 +32,7 @@ const de: Record<MessageKey, string> = {
   'catalog.topic.science': 'Wissenschaft',
   'catalog.topic.sports': 'Sport',
   'catalog.topic.culture': 'Kultur',
+  'catalog.topic.blogs': 'Blogs',
   'catalog.subscribed': 'Abonniert',
   'catalog.selectAll': 'Alle auswählen',
   'catalog.subscribe': 'Abonnieren ({count})',

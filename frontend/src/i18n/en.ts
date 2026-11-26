@@ -30,6 +30,7 @@ export default {
   'catalog.topic.science': 'Science',
   'catalog.topic.sports': 'Sports',
   'catalog.topic.culture': 'Culture',
+  'catalog.topic.blogs': 'Blogs',
   'catalog.subscribed': 'Subscribed',
   'catalog.selectAll': 'Select all',
   'catalog.subscribe': 'Subscribe ({count})',

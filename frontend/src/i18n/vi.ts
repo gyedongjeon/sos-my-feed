@@ -32,6 +32,7 @@ const vi: Record<MessageKey, string> = {
   'catalog.topic.science': 'Khoa học',
   'catalog.topic.sports': 'Thể thao',
   'catalog.topic.culture': 'Văn hóa',
+  'catalog.topic.blogs': 'Blog',
   'catalog.subscribed': 'Đã đăng ký',
   'catalog.selectAll': 'Chọn tất cả',
   'catalog.subscribe': 'Đăng ký ({count})',

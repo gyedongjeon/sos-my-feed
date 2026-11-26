@@ -32,6 +32,7 @@ const zhHant: Record<MessageKey, string> = {
   'catalog.topic.science': '科學',
   'catalog.topic.sports': '體育',
   'catalog.topic.culture': '文化',
+  'catalog.topic.blogs': '部落格',
   'catalog.subscribed': '已訂閱',
   'catalog.selectAll': '全選',
   'catalog.subscribe': '訂閱（{count}）',

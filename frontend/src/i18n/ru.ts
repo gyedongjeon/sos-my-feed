@@ -32,6 +32,7 @@ const ru: Record<MessageKey, string> = {
   'catalog.topic.science': 'Наука',
   'catalog.topic.sports': 'Спорт',
   'catalog.topic.culture': 'Культура',
+  'catalog.topic.blogs': 'Блоги',
   'catalog.subscribed': 'Подписка оформлена',
   'catalog.selectAll': 'Выбрать все',
   'catalog.subscribe': 'Подписаться ({count})',

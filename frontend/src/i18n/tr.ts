@@ -32,6 +32,7 @@ const tr: Record<MessageKey, string> = {
   'catalog.topic.science': 'Bilim',
   'catalog.topic.sports': 'Spor',
   'catalog.topic.culture': 'Kültür',
+  'catalog.topic.blogs': 'Bloglar',
   'catalog.subscribed': 'Abone olundu',
   'catalog.selectAll': 'Tümünü seç',
   'catalog.subscribe': 'Abone ol ({count})',

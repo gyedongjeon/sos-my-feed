@@ -31,6 +31,7 @@ const ko: Record<MessageKey, string> = {
   'catalog.topic.science': '과학',
   'catalog.topic.sports': '스포츠',
   'catalog.topic.culture': '문화',
+  'catalog.topic.blogs': '블로그',
   'catalog.subscribed': '구독 중',
   'catalog.selectAll': '모두 선택',
   'catalog.subscribe': '구독하기 ({count})',
