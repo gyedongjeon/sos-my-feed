@@ -20,6 +20,12 @@ const pl: Record<MessageKey, string> = {
   'feed.busy': "Wczytywanie…",
   'feed.loadFailed': "Nie udało się wczytać kanałów: {error}",
   'feed.updated': "Kanały zaktualizowane.",
+  'feed.unreadOnly': "Tylko nieprzeczytane",
+  'feed.markAllRead': "Oznacz wszystko jako przeczytane",
+  'feed.markRead': "Oznacz jako przeczytane",
+  'feed.markUnread': "Oznacz jako nieprzeczytane",
+  'feed.allRead': "Wszystko przeczytane.",
+  'feed.markFailed': "Nie udało się zapisać przeczytanych: {error}",
 
   'catalog.title': 'Popularne kanały',
   'catalog.intro': 'Wybierz język i to, co cię interesuje, a potem subskrybuj kilka kanałów naraz.',

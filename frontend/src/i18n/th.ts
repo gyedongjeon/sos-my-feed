@@ -20,6 +20,12 @@ const th: Record<MessageKey, string> = {
   'feed.busy': "กำลังโหลด…",
   'feed.loadFailed': "โหลดฟีดของคุณไม่ได้: {error}",
   'feed.updated': "อัปเดตฟีดแล้ว",
+  'feed.unreadOnly': "เฉพาะที่ยังไม่อ่าน",
+  'feed.markAllRead': "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด",
+  'feed.markRead': "ทำเครื่องหมายว่าอ่านแล้ว",
+  'feed.markUnread': "ทำเครื่องหมายว่ายังไม่อ่าน",
+  'feed.allRead': "อ่านครบแล้ว",
+  'feed.markFailed': "บันทึกสิ่งที่อ่านแล้วไม่ได้: {error}",
 
   'catalog.title': 'ฟีดยอดนิยม',
   'catalog.intro': 'เลือกภาษาและเรื่องที่สนใจ แล้วติดตามหลายฟีดได้ในครั้งเดียว',

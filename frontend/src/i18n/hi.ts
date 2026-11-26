@@ -20,6 +20,12 @@ const hi: Record<MessageKey, string> = {
   'feed.busy': "लोड हो रहा है…",
   'feed.loadFailed': "आपकी फ़ीड लोड नहीं हो सकीं: {error}",
   'feed.updated': "फ़ीड अपडेट हो गईं।",
+  'feed.unreadOnly': "सिर्फ़ बिना पढ़े",
+  'feed.markAllRead': "सभी को पढ़ा हुआ चिह्नित करें",
+  'feed.markRead': "पढ़ा हुआ चिह्नित करें",
+  'feed.markUnread': "बिना पढ़ा चिह्नित करें",
+  'feed.allRead': "आपने सब पढ़ लिया है।",
+  'feed.markFailed': "पढ़े गए लेख सहेजे नहीं जा सके: {error}",
 
   'catalog.title': 'लोकप्रिय फ़ीड',
   'catalog.intro': 'भाषा और अपनी रुचियाँ चुनें, फिर कई फ़ीड एक साथ सब्सक्राइब करें।',

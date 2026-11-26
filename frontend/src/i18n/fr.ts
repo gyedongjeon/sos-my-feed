@@ -20,6 +20,12 @@ const fr: Record<MessageKey, string> = {
   'feed.busy': "Chargement…",
   'feed.loadFailed': "Impossible de charger vos flux : {error}",
   'feed.updated': "Flux mis à jour.",
+  'feed.unreadOnly': "Non lus uniquement",
+  'feed.markAllRead': "Tout marquer comme lu",
+  'feed.markRead': "Marquer comme lu",
+  'feed.markUnread': "Marquer comme non lu",
+  'feed.allRead': "Vous avez tout lu.",
+  'feed.markFailed': "Impossible d'enregistrer ce que vous avez lu : {error}",
 
   'catalog.title': 'Flux populaires',
   'catalog.intro': 'Choisissez une langue et vos centres d’intérêt, puis abonnez-vous à plusieurs flux d’un coup.',

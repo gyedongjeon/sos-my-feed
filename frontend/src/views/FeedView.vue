@@ -19,6 +19,12 @@ const browsing = ref(false)
 async function subscribe() {
   if (await feeds.subscribe(address.value)) address.value = ''
 }
+
+/** Opens an article in the reader; it counts as read from then on. */
+function open(post: Post) {
+  selected.value = post
+  feeds.mark([post], true)
+}
 </script>
 
 <template>
@@ -55,12 +61,22 @@ async function subscribe() {
         :class="feeds.filter === item.id ? 'btn-primary' : 'bg-base-100'"
         @click="feeds.filter = item.id"
       >
-        {{ item.title }}
+        <span class="truncate">{{ item.title }}</span>
+        <span v-if="feeds.unread(item.id)" class="badge badge-sm" :class="feeds.filter === item.id ? 'badge-neutral' : 'badge-primary badge-soft'">
+          {{ feeds.unread(item.id) }}
+        </span>
       </button>
       <button class="btn btn-sm btn-ghost ml-auto" :aria-pressed="browsing" :class="{ 'btn-active': browsing }" @click="browsing = !browsing">
         {{ t('catalog.browse') }}
       </button>
       <button class="btn btn-sm btn-ghost" :disabled="feeds.busy" @click="feeds.refresh()">{{ t('feed.refresh') }}</button>
+    </div>
+    <div v-if="feeds.feeds.length" class="mb-3 flex flex-wrap items-center gap-2">
+      <label class="label cursor-pointer gap-2 text-sm">
+        <input v-model="feeds.unreadOnly" type="checkbox" class="toggle toggle-sm toggle-primary" />
+        {{ t('feed.unreadOnly') }}
+      </label>
+      <button class="btn btn-sm btn-ghost ml-auto" :disabled="!feeds.unread(feeds.filter)" @click="feeds.markAllRead()">{{ t('feed.markAllRead') }}</button>
     </div>
 
     <div class="grid gap-3">
@@ -70,21 +86,31 @@ async function subscribe() {
         :key="`${post.feed.id} ${post.article.url}`"
         class="card card-border flex-row items-center bg-base-100 transition hover:border-primary"
       >
-        <button aria-haspopup="dialog" class="card-body min-w-0 grow flex-row items-center gap-4 text-left" @click="selected = post">
-          <div class="min-w-0 grow">
+        <button aria-haspopup="dialog" class="card-body min-w-0 grow flex-row items-center gap-4 text-left" @click="open(post)">
+          <div class="min-w-0 grow" :class="{ 'opacity-60': post.article.read }">
             <p class="text-xs text-base-content/65">
               {{ post.feed.title }} <span v-if="post.time">· {{ new Date(post.time).toLocaleDateString(settings.language) }}</span>
             </p>
-            <h2 class="card-title my-1 break-words text-lg">{{ post.article.title }}</h2>
+            <h2 class="card-title my-1 break-words text-lg" :class="{ 'font-normal': post.article.read }">{{ post.article.title }}</h2>
             <p class="line-clamp-2 text-sm text-base-content/70">{{ post.article.summary }}</p>
           </div>
           <span class="text-2xl text-primary" aria-hidden="true">›</span>
+        </button>
+        <!-- A dot while the article is unread; a ring once it is read. Either marks it the other way. -->
+        <button
+          class="btn btn-ghost btn-circle btn-sm shrink-0"
+          :aria-label="`${t(post.article.read ? 'feed.markUnread' : 'feed.markRead')}: ${post.article.title}`"
+          :title="t(post.article.read ? 'feed.markUnread' : 'feed.markRead')"
+          @click="feeds.mark([post], !post.article.read)"
+        >
+          <span class="size-2.5 rounded-full border-2 border-primary" :class="{ 'bg-primary': !post.article.read }"></span>
         </button>
         <a
           class="btn btn-ghost btn-circle btn-sm mr-3 shrink-0 text-base-content/60"
           :href="post.article.url"
           target="_blank"
           rel="noreferrer"
+          @click="feeds.mark([post], true)"
           :aria-label="`${t('reader.original')}: ${post.article.title}`"
           :title="t('reader.original')"
         >
@@ -93,7 +119,7 @@ async function subscribe() {
       </div>
       <section v-if="feeds.feeds.length && !feeds.posts.length" class="card card-border bg-base-100">
         <div class="card-body">
-          <h2 class="card-title">{{ t('feed.noPosts') }}</h2>
+          <h2 class="card-title">{{ t(feeds.unreadOnly && feeds.unread(feeds.filter) === 0 ? 'feed.allRead' : 'feed.noPosts') }}</h2>
         </div>
       </section>
     </div>

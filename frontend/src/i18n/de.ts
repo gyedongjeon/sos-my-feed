@@ -20,6 +20,12 @@ const de: Record<MessageKey, string> = {
   'feed.busy': "Wird geladen…",
   'feed.loadFailed': "Deine Feeds konnten nicht geladen werden: {error}",
   'feed.updated': "Feeds aktualisiert.",
+  'feed.unreadOnly': "Nur ungelesene",
+  'feed.markAllRead': "Alle als gelesen markieren",
+  'feed.markRead': "Als gelesen markieren",
+  'feed.markUnread': "Als ungelesen markieren",
+  'feed.allRead': "Alles gelesen.",
+  'feed.markFailed': "Gelesenes konnte nicht gespeichert werden: {error}",
 
   'catalog.title': 'Beliebte Feeds',
   'catalog.intro': 'Wähle eine Sprache und deine Interessen und abonniere mehrere Feeds auf einmal.',

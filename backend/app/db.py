@@ -33,6 +33,14 @@ CREATE TABLE IF NOT EXISTS articles (
 );
 
 CREATE INDEX IF NOT EXISTS articles_by_feed ON articles (feed_id);
+
+-- The articles the reader has read, by their address. Kept apart from `articles`, which is
+-- replaced each time a feed is read; forgotten once an article is no longer in its feed.
+CREATE TABLE IF NOT EXISTS read_articles (
+    feed_id INTEGER NOT NULL REFERENCES feeds (id) ON DELETE CASCADE,
+    url TEXT NOT NULL,
+    PRIMARY KEY (feed_id, url)
+);
 """
 
 
