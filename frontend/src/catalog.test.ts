@@ -36,6 +36,12 @@ describe('recommending feeds', () => {
     expect(chosen.length).toBeLessThan(recommend('en', []).length)
   })
 
+  it('recommends the blogs of well-known people as an interest of its own', () => {
+    const blogs = recommend('en', ['blogs'])
+    expect(blogs.length).toBeGreaterThan(0)
+    expect(blogs.every((feed) => feed.topics.includes('blogs'))).toBe(true)
+  })
+
   it('keeps the order of the catalog', () => {
     const english = CATALOG.filter((feed) => feed.language === 'en')
     expect(recommend('en', [])).toEqual(english)

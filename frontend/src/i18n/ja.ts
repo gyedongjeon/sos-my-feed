@@ -32,6 +32,7 @@ const ja: Record<MessageKey, string> = {
   'catalog.topic.science': '科学',
   'catalog.topic.sports': 'スポーツ',
   'catalog.topic.culture': 'カルチャー',
+  'catalog.topic.blogs': 'ブログ',
   'catalog.subscribed': '購読中',
   'catalog.selectAll': 'すべて選択',
   'catalog.subscribe': '購読する（{count}）',

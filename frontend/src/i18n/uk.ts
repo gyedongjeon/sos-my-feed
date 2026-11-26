@@ -32,6 +32,7 @@ const uk: Record<MessageKey, string> = {
   'catalog.topic.science': 'Наука',
   'catalog.topic.sports': 'Спорт',
   'catalog.topic.culture': 'Культура',
+  'catalog.topic.blogs': 'Блоги',
   'catalog.subscribed': 'Ви підписані',
   'catalog.selectAll': 'Вибрати все',
   'catalog.subscribe': 'Підписатися ({count})',

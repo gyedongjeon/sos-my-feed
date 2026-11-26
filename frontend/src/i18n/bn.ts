@@ -32,6 +32,7 @@ const bn: Record<MessageKey, string> = {
   'catalog.topic.science': 'বিজ্ঞান',
   'catalog.topic.sports': 'খেলা',
   'catalog.topic.culture': 'সংস্কৃতি',
+  'catalog.topic.blogs': 'ব্লগ',
   'catalog.subscribed': 'সাবস্ক্রাইব করা হয়েছে',
   'catalog.selectAll': 'সব বেছে নিন',
   'catalog.subscribe': 'সাবস্ক্রাইব করুন ({count})',

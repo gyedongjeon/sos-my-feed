@@ -32,6 +32,7 @@ const zhHans: Record<MessageKey, string> = {
   'catalog.topic.science': '科学',
   'catalog.topic.sports': '体育',
   'catalog.topic.culture': '文化',
+  'catalog.topic.blogs': '博客',
   'catalog.subscribed': '已订阅',
   'catalog.selectAll': '全选',
   'catalog.subscribe': '订阅（{count}）',

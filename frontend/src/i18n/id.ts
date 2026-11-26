@@ -32,6 +32,7 @@ const id: Record<MessageKey, string> = {
   'catalog.topic.science': 'Sains',
   'catalog.topic.sports': 'Olahraga',
   'catalog.topic.culture': 'Budaya',
+  'catalog.topic.blogs': 'Blog',
   'catalog.subscribed': 'Sudah berlangganan',
   'catalog.selectAll': 'Pilih semua',
   'catalog.subscribe': 'Berlangganan ({count})',

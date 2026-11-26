@@ -32,6 +32,7 @@ const th: Record<MessageKey, string> = {
   'catalog.topic.science': 'วิทยาศาสตร์',
   'catalog.topic.sports': 'กีฬา',
   'catalog.topic.culture': 'วัฒนธรรม',
+  'catalog.topic.blogs': 'บล็อก',
   'catalog.subscribed': 'ติดตามแล้ว',
   'catalog.selectAll': 'เลือกทั้งหมด',
   'catalog.subscribe': 'ติดตาม ({count})',

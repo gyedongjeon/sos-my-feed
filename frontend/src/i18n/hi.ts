@@ -32,6 +32,7 @@ const hi: Record<MessageKey, string> = {
   'catalog.topic.science': 'विज्ञान',
   'catalog.topic.sports': 'खेल',
   'catalog.topic.culture': 'संस्कृति',
+  'catalog.topic.blogs': 'ब्लॉग',
   'catalog.subscribed': 'सब्सक्राइब किया हुआ',
   'catalog.selectAll': 'सभी चुनें',
   'catalog.subscribe': 'सब्सक्राइब करें ({count})',

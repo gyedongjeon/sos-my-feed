@@ -1,11 +1,13 @@
 // Well-known news sites and their feeds, to subscribe to without copying addresses.
-// Each address was read on 2026-11-26 and held articles from the two weeks before. Sites move or
-// drop their feeds; a feed that stops working is taken out rather than kept for its name.
+// Each address was read on 2026-11-26 and held articles from the two weeks before (a blog's,
+// from the six months before). Sites move or drop their feeds; a feed that stops working is
+// taken out rather than kept for its name.
 
 import type { PageLanguage } from './languages'
 
 /** What a feed is mostly about. */
-export const TOPICS = ['general', 'world', 'business', 'tech', 'science', 'sports', 'culture'] as const
+// `blogs` are those of well-known people, each also under what it is mostly about.
+export const TOPICS = ['general', 'world', 'business', 'tech', 'science', 'sports', 'culture', 'blogs'] as const
 
 export type Topic = (typeof TOPICS)[number]
 
@@ -97,6 +99,50 @@ export const CATALOG: CatalogFeed[] = [
   feed('en', 'Variety', 'https://variety.com/feed/', 'culture'),
   feed('en', 'Rolling Stone', 'https://www.rollingstone.com/feed/', 'culture'),
   feed('en', 'Pitchfork', 'https://pitchfork.com/feed/feed-news/rss', 'culture'),
+  feed('en', 'Simon Willison', 'https://simonwillison.net/atom/everything/', 'blogs', 'tech'),
+  feed('en', 'Daring Fireball (John Gruber)', 'https://daringfireball.net/feeds/main', 'blogs', 'tech'),
+  feed('en', 'kottke.org (Jason Kottke)', 'https://feeds.kottke.org/main', 'blogs', 'culture'),
+  feed('en', 'Marginal Revolution (Tyler Cowen, Alex Tabarrok)', 'https://marginalrevolution.com/feed', 'blogs', 'business'),
+  feed('en', 'Astral Codex Ten (Scott Alexander)', 'https://www.astralcodexten.com/feed', 'blogs', 'science'),
+  feed('en', 'Noahpinion (Noah Smith)', 'https://www.noahpinion.blog/feed', 'blogs', 'business'),
+  feed('en', 'Paul Krugman', 'https://paulkrugman.substack.com/feed', 'blogs', 'business'),
+  feed('en', 'Julia Evans', 'https://jvns.ca/atom.xml', 'blogs', 'tech'),
+  feed('en', 'Andrej Karpathy', 'https://karpathy.bearblog.dev/feed/', 'blogs', 'tech'),
+  feed('en', 'Lilian Weng', 'https://lilianweng.github.io/index.xml', 'blogs', 'tech'),
+  feed('en', 'Cal Newport', 'https://calnewport.com/feed/', 'blogs', 'tech'),
+  feed('en', 'AVC (Fred Wilson)', 'https://avc.xyz/feed', 'blogs', 'business'),
+  feed('en', 'Derek Sivers', 'https://sive.rs/en.atom', 'blogs', 'culture'),
+  feed('en', 'David Heinemeier Hansson', 'https://world.hey.com/dhh/feed.atom', 'blogs', 'tech'),
+  feed('en', 'Jason Fried', 'https://world.hey.com/jason/feed.atom', 'blogs', 'business'),
+  feed('en', 'Krebs on Security (Brian Krebs)', 'https://krebsonsecurity.com/feed/', 'blogs', 'tech'),
+  feed('en', 'Troy Hunt', 'https://www.troyhunt.com/rss/', 'blogs', 'tech'),
+  feed('en', 'The Old New Thing (Raymond Chen)', 'https://devblogs.microsoft.com/oldnewthing/feed', 'blogs', 'tech'),
+  feed('en', 'One Useful Thing (Ethan Mollick)', 'https://www.oneusefulthing.org/feed', 'blogs', 'tech'),
+  feed('en', 'Gary Marcus', 'https://garymarcus.substack.com/feed', 'blogs', 'tech'),
+  feed('en', 'Benedict Evans', 'https://www.ben-evans.com/benedictevans?format=rss', 'blogs', 'tech', 'business'),
+  feed('en', 'Martin Fowler', 'https://martinfowler.com/feed.atom', 'blogs', 'tech'),
+  feed('en', 'Coding Horror (Jeff Atwood)', 'https://blog.codinghorror.com/rss/', 'blogs', 'tech'),
+  feed('en', 'Letters from an American (Heather Cox Richardson)', 'https://heathercoxrichardson.substack.com/feed', 'blogs', 'general'),
+  feed('en', 'Silver Bulletin (Nate Silver)', 'https://www.natesilver.net/feed', 'blogs', 'general'),
+  feed('en', 'The Marginalian (Maria Popova)', 'https://www.themarginalian.org/feed/', 'blogs', 'culture'),
+  feed('en', 'Sabine Hossenfelder', 'https://backreaction.blogspot.com/feeds/posts/default', 'blogs', 'science'),
+  feed('en', 'Culture Study (Anne Helen Petersen)', 'https://annehelen.substack.com/feed', 'blogs', 'culture'),
+  feed('en', 'The Honest Broker (Ted Gioia)', 'https://www.honest-broker.com/feed', 'blogs', 'culture'),
+  feed('en', 'Vitalik Buterin', 'https://vitalik.eth.limo/feed.xml', 'blogs', 'tech'),
+  feed('en', 'antirez (Salvatore Sanfilippo)', 'http://antirez.com/rss', 'blogs', 'tech'),
+  feed('en', 'Lenny\'s Newsletter (Lenny Rachitsky)', 'https://www.lennysnewsletter.com/feed', 'blogs', 'business'),
+  feed('en', 'Matt Mullenweg', 'https://ma.tt/feed/', 'blogs', 'tech'),
+  feed('en', 'ongoing (Tim Bray)', 'https://www.tbray.org/ongoing/ongoing.atom', 'blogs', 'tech'),
+  feed('en', 'Pluralistic (Cory Doctorow)', 'https://pluralistic.net/feed/', 'blogs', 'tech'),
+  feed('en', 'Citation Needed (Molly White)', 'https://www.citationneeded.news/rss/', 'blogs', 'tech'),
+  feed('en', 'Where\'s Your Ed At (Ed Zitron)', 'https://www.wheresyoured.at/rss/', 'blogs', 'tech'),
+  feed('en', 'Charity Majors', 'https://charity.wtf/feed/', 'blogs', 'tech'),
+  feed('en', 'Mitchell Hashimoto', 'https://mitchellh.com/feed.xml', 'blogs', 'tech'),
+  feed('en', 'Jeff Geerling', 'https://www.jeffgeerling.com/blog.xml', 'blogs', 'tech'),
+  feed('en', 'Drew DeVault', 'https://drewdevault.com/blog/index.xml', 'blogs', 'tech'),
+  feed('en', 'Xe Iaso', 'https://xeiaso.net/blog.rss', 'blogs', 'tech'),
+  feed('en', 'John D. Cook', 'https://www.johndcook.com/blog/feed/', 'blogs', 'science'),
+  feed('en', 'Money Stuff (Matt Levine)', 'https://www.bloomberg.com/opinion/authors/ARbTQlRLRjE/matthew-s-levine.rss', 'blogs', 'business'),
 
   feed('ko', '연합뉴스', 'https://www.yna.co.kr/rss/news.xml', 'general'),
   feed('ko', '한겨레', 'https://www.hani.co.kr/rss/', 'general'),
@@ -144,6 +190,11 @@ export const CATALOG: CatalogFeed[] = [
   feed('ko', '경향신문 · 문화', 'https://www.khan.co.kr/rss/rssdata/culture_news.xml', 'culture'),
   feed('ko', '조선일보 · 문화', 'https://www.chosun.com/arc/outboundfeeds/rss/category/culture-life/?outputType=xml', 'culture'),
   feed('ko', 'SBS 뉴스 · 문화', 'https://news.sbs.co.kr/news/SectionRssFeed.do?sectionId=07', 'culture'),
+  feed('ko', '향로 (이동욱)', 'https://jojoldu.tistory.com/rss', 'blogs', 'tech'),
+  feed('ko', '기계인간 John Grib', 'https://johngrib.github.io/feed.xml', 'blogs', 'tech'),
+  feed('ko', '어쩐지 오늘은 (변성윤)', 'https://zzsza.github.io/feed.xml', 'blogs', 'tech'),
+  feed('ko', '컴퓨터 vs 책 (박재호)', 'https://jhrogue.blogspot.com/feeds/posts/default', 'blogs', 'tech'),
+  feed('ko', 'Channy\'s Blog (윤석찬)', 'https://channy.creation.net/rss.xml', 'blogs', 'tech'),
 
   feed('ja', '朝日新聞', 'https://www.asahi.com/rss/asahi/newsheadlines.rdf', 'general'),
   feed('ja', '毎日新聞', 'https://mainichi.jp/rss/etc/mainichi-flash.rss', 'general'),
@@ -178,6 +229,12 @@ export const CATALOG: CatalogFeed[] = [
   feed('ja', 'サッカーキング', 'https://www.soccer-king.jp/feed', 'sports'),
   feed('ja', '朝日新聞 · 文化', 'https://www.asahi.com/rss/asahi/culture.rdf', 'culture'),
   feed('ja', 'CINRA', 'https://www.cinra.net/feed', 'culture'),
+  feed('ja', 'ちきりんの日記', 'https://chikirin.hatenablog.com/rss', 'blogs', 'business'),
+  feed('ja', 'けんすう', 'https://note.com/kensuu/rss', 'blogs', 'business'),
+  feed('ja', '深津貴之 (fladdict)', 'https://note.com/fladdict/rss', 'blogs', 'tech'),
+  feed('ja', '落合陽一', 'https://note.com/ochyai/rss', 'blogs', 'science'),
+  feed('ja', '山本一郎 (やまもといちろう)', 'https://note.com/kirik/rss', 'blogs', 'general'),
+  feed('ja', '伊藤穰一 (Joi Ito)', 'https://joi.ito.com/jp/index.xml', 'blogs', 'tech'),
 
   feed('zh-Hans', '中新网', 'https://www.chinanews.com.cn/rss/scroll-news.xml', 'general'),
   feed('zh-Hans', 'BBC 中文', 'https://feeds.bbci.co.uk/zhongwen/simp/rss.xml', 'world'),
@@ -196,10 +253,15 @@ export const CATALOG: CatalogFeed[] = [
   feed('zh-Hans', '钛媒体', 'https://www.tmtpost.com/rss.xml', 'tech'),
   feed('zh-Hans', 'cnBeta', 'https://www.cnbeta.com.tw/backend.php', 'tech'),
   feed('zh-Hans', '奇客Solidot', 'https://www.solidot.org/index.rss', 'tech', 'science'),
-  feed('zh-Hans', '阮一峰的网络日志', 'https://www.ruanyifeng.com/blog/atom.xml', 'tech'),
+  feed('zh-Hans', '阮一峰的网络日志', 'https://www.ruanyifeng.com/blog/atom.xml', 'blogs', 'tech'),
   feed('zh-Hans', '中新网 · 体育', 'https://www.chinanews.com.cn/rss/sports.xml', 'sports'),
   feed('zh-Hans', '中新网 · 文化', 'https://www.chinanews.com.cn/rss/culture.xml', 'culture'),
   feed('zh-Hans', '机核', 'https://www.gcores.com/rss', 'culture'),
+  feed('zh-Hans', '月光博客 (龙威廉)', 'https://www.williamlong.info/rss.xml', 'blogs', 'tech'),
+  feed('zh-Hans', '云风的 BLOG', 'https://blog.codingnow.com/atom.xml', 'blogs', 'tech'),
+  feed('zh-Hans', '张鑫旭', 'https://www.zhangxinxu.com/wordpress/feed/', 'blogs', 'tech'),
+  feed('zh-Hans', '宝玉', 'https://baoyu.io/feed.xml', 'blogs', 'tech'),
+  feed('zh-Hans', '潮流周刊 (Tw93)', 'https://weekly.tw93.fun/rss.xml', 'blogs', 'tech'),
 
   feed('zh-Hant', '自由時報', 'https://news.ltn.com.tw/rss/all.xml', 'general'),
   feed('zh-Hant', '香港電台 RTHK', 'https://rthk.hk/rthk/news/rss/c_expressnews_clocal.xml', 'general'),
@@ -224,6 +286,9 @@ export const CATALOG: CatalogFeed[] = [
   feed('zh-Hant', '香港電台 · 體育', 'https://rthk.hk/rthk/news/rss/c_expressnews_csport.xml', 'sports'),
   feed('zh-Hant', '中央社 · 文化', 'https://feeds.feedburner.com/rsscna/culture', 'culture'),
   feed('zh-Hant', '自由時報 · 藝文', 'https://news.ltn.com.tw/rss/art.xml', 'culture'),
+  feed('zh-Hant', 'Mr. Market 市場先生', 'https://rich01.com/feed/', 'blogs', 'business'),
+  feed('zh-Hant', 'Ken 的生活', 'https://kenlu.net/feed/', 'blogs', 'tech'),
+  feed('zh-Hant', '閱讀前哨站 (瓦基)', 'https://readingoutpost.com/feed/', 'blogs', 'culture'),
 
   feed('es', 'El País', 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada', 'general'),
   feed('es', 'El Mundo', 'https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml', 'general'),
@@ -258,6 +323,8 @@ export const CATALOG: CatalogFeed[] = [
   feed('es', 'Mundo Deportivo', 'https://www.mundodeportivo.com/rss/home.xml', 'sports'),
   feed('es', 'El País · Cultura', 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/cultura/portada', 'culture'),
   feed('es', 'El Mundo · Cultura', 'https://e00-elmundo.uecdn.es/elmundo/rss/cultura.xml', 'culture'),
+  feed('es', 'Enrique Dans', 'https://www.enriquedans.com/feed', 'blogs', 'tech'),
+  feed('es', 'Microsiervos', 'https://www.microsiervos.com/index.xml', 'blogs', 'tech', 'science'),
 
   feed('fr', 'Le Monde', 'https://www.lemonde.fr/rss/une.xml', 'general'),
   feed('fr', 'franceinfo', 'https://www.francetvinfo.fr/titres.rss', 'general'),
@@ -297,6 +364,12 @@ export const CATALOG: CatalogFeed[] = [
   feed('fr', 'Le Monde · Culture', 'https://www.lemonde.fr/culture/rss_full.xml', 'culture'),
   feed('fr', 'Le Figaro · Culture', 'https://www.lefigaro.fr/rss/figaro_culture.xml', 'culture'),
   feed('fr', 'Télérama', 'https://www.telerama.fr/rss/une.xml', 'culture'),
+  feed('fr', 'Korben', 'https://korben.info/feed', 'blogs', 'tech'),
+  feed('fr', 'Affordance (Olivier Ertzscheid)', 'https://affordance.framasoft.org/feed/', 'blogs', 'tech'),
+  feed('fr', 'Stéphane Bortzmeyer', 'https://www.bortzmeyer.org/feed-full.atom', 'blogs', 'tech'),
+  feed('fr', 'Liens en vrac (sebsauvage)', 'https://sebsauvage.net/links/?do=rss', 'blogs', 'tech'),
+  feed('fr', 'Journal d\'un avocat (Maître Eolas)', 'https://www.maitre-eolas.fr/feed/atom', 'blogs', 'general'),
+  feed('fr', 'Ploum (Lionel Dricot)', 'https://ploum.net/atom_fr.xml', 'blogs', 'tech'),
 
   feed('de', 'tagesschau', 'https://www.tagesschau.de/index~rss2.xml', 'general'),
   feed('de', 'DER SPIEGEL', 'https://www.spiegel.de/schlagzeilen/index.rss', 'general'),
@@ -342,6 +415,9 @@ export const CATALOG: CatalogFeed[] = [
   feed('de', 'DER SPIEGEL · Kultur', 'https://www.spiegel.de/kultur/index.rss', 'culture'),
   feed('de', 'FAZ.NET · Feuilleton', 'https://www.faz.net/rss/aktuell/feuilleton/', 'culture'),
   feed('de', 'Süddeutsche Zeitung · Kultur', 'https://rss.sueddeutsche.de/rss/Kultur', 'culture'),
+  feed('de', 'Die wunderbare Welt von Isotopp (Kristian Köhntopp)', 'https://blog.koehntopp.info/feed.xml', 'blogs', 'tech'),
+  feed('de', 'wirres.net (Felix Schwenzel)', 'https://wirres.net/feed', 'blogs', 'culture'),
+  feed('de', 'Indiskretion Ehrensache (Thomas Knüwer)', 'https://www.indiskretionehrensache.de/feed/', 'blogs', 'business'),
 
   feed('it', 'ANSA', 'https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml', 'general'),
   feed('it', 'la Repubblica', 'https://www.repubblica.it/rss/homepage/rss2.0.xml', 'general'),
@@ -380,6 +456,9 @@ export const CATALOG: CatalogFeed[] = [
   feed('it', 'Rolling Stone Italia', 'https://www.rollingstone.it/feed/', 'culture'),
   feed('it', 'Artribune', 'https://www.artribune.com/feed/', 'culture'),
   feed('it', 'Il Libraio', 'https://www.illibraio.it/feed/', 'culture'),
+  feed('it', 'Manteblog (Massimo Mantellini)', 'https://www.mantellini.it/feed/', 'blogs', 'tech'),
+  feed('it', 'Luca De Biase', 'https://blog.debiase.com/feed/', 'blogs', 'tech'),
+  feed('it', 'Beppe Grillo', 'https://www.beppegrillo.it/feed/', 'blogs', 'general'),
 
   feed('pt', 'g1', 'https://g1.globo.com/rss/g1/', 'general'),
   feed('pt', 'Folha de S.Paulo', 'https://feeds.folha.uol.com.br/emcimadahora/rss091.xml', 'general'),
@@ -412,6 +491,8 @@ export const CATALOG: CatalogFeed[] = [
   feed('pt', 'ge', 'https://ge.globo.com/rss/ge/', 'sports'),
   feed('pt', 'Folha · Ilustrada', 'https://feeds.folha.uol.com.br/ilustrada/rss091.xml', 'culture'),
   feed('pt', 'g1 · Pop & Arte', 'https://g1.globo.com/rss/g1/pop-arte/', 'culture'),
+  feed('pt', 'Manual do Usuário (Rodrigo Ghedin)', 'https://manualdousuario.net/feed/', 'blogs', 'tech'),
+  feed('pt', 'Blog do Noblat (Ricardo Noblat)', 'https://www.metropoles.com/blog-do-noblat/feed', 'blogs'),
 
   feed('pl', 'TVN24', 'https://tvn24.pl/najnowsze.xml', 'general'),
   feed('pl', 'Rzeczpospolita', 'https://www.rp.pl/rss_main', 'general'),
@@ -442,6 +523,7 @@ export const CATALOG: CatalogFeed[] = [
   feed('pl', 'Sport.pl', 'https://www.sport.pl/pub/rss/sport.xml', 'sports'),
   feed('pl', 'Przegląd Sportowy', 'https://przegladsportowy.onet.pl/.feed', 'sports'),
   feed('pl', 'Polsat News · Kultura', 'https://www.polsatnews.pl/rss/kultura.xml', 'culture'),
+  feed('pl', 'Marcin Iwuć', 'https://marciniwuc.com/feed/', 'blogs', 'business'),
 
   feed('ru', 'Meduza', 'https://meduza.io/rss/all', 'general'),
   feed('ru', 'Новая газета Европа', 'https://novayagazeta.eu/feed/rss', 'general'),
@@ -467,6 +549,7 @@ export const CATALOG: CatalogFeed[] = [
   feed('ru', 'Чемпионат', 'https://www.championat.com/rss/news/', 'sports'),
   feed('ru', 'Коммерсантъ · Культура', 'https://www.kommersant.ru/RSS/section-culture.xml', 'culture'),
   feed('ru', 'Арзамас', 'https://arzamas.academy/feed_v1.rss', 'culture'),
+  feed('ru', 'Леонид Каганов', 'https://lleo.me/dnevnik/rss.xml', 'blogs', 'culture'),
 
   feed('uk', 'Українська правда', 'https://www.pravda.com.ua/rss/', 'general'),
   feed('uk', 'Суспільне Новини', 'https://suspilne.media/rss/all.rss', 'general'),
@@ -517,6 +600,7 @@ export const CATALOG: CatalogFeed[] = [
   feed('tr', 'Hürriyet · Spor', 'https://www.hurriyet.com.tr/rss/spor', 'sports'),
   feed('tr', 'NTV · Spor (Skor)', 'https://www.ntv.com.tr/sporskor.rss', 'sports'),
   feed('tr', 'TRT Haber · Spor', 'https://www.trthaber.com/spor_articles.rss', 'sports'),
+  feed('tr', 'Serdar Kuzuloğlu', 'https://www.serdarkuzuloglu.com/feed/', 'blogs', 'tech'),
 
   feed('vi', 'VnExpress', 'https://vnexpress.net/rss/tin-moi-nhat.rss', 'general'),
   feed('vi', 'Tuổi Trẻ', 'https://tuoitre.vn/rss/tin-moi-nhat.rss', 'general'),
@@ -592,6 +676,7 @@ export const CATALOG: CatalogFeed[] = [
   feed('id', 'detikHot', 'https://hot.detik.com/rss', 'culture'),
   feed('id', 'CNN Indonesia · Hiburan', 'https://www.cnnindonesia.com/hiburan/rss', 'culture'),
   feed('id', 'ANTARA · Hiburan', 'https://www.antaranews.com/rss/hiburan.xml', 'culture'),
+  feed('id', 'Recehan (Ivan Lanin)', 'https://ivanlanin.substack.com/feed', 'blogs'),
 
   feed('hi', 'अमर उजाला', 'https://www.amarujala.com/rss/breaking-news.xml', 'general'),
   feed('hi', 'NDTV इंडिया', 'https://feeds.feedburner.com/ndtvkhabar-latest', 'general'),
@@ -638,6 +723,7 @@ export const CATALOG: CatalogFeed[] = [
   feed('bn', 'ঢাকা পোস্ট · খেলা', 'https://www.dhakapost.com/rss/sports.xml', 'sports'),
   feed('bn', 'বাংলা ট্রিবিউন · বিনোদন', 'https://www.banglatribune.com/feed/entertainment', 'culture'),
   feed('bn', 'ঢাকা পোস্ট · বিনোদন', 'https://www.dhakapost.com/rss/entertainment.xml', 'culture'),
+  feed('bn', 'সচলায়তন', 'https://www.sachalayatan.com/rss.xml', 'blogs', 'culture'),
 ]
 
 /** The feeds in a language about any of the interests, in the catalog's order; with no
