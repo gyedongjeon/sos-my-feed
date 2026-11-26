@@ -15,6 +15,7 @@ an article inside the app, page by page.
 Part of the SOS series, next to [SOS My Language](https://github.com/gyedongjeon/sos-my-language).
 
 ## Features
+- **Popular feeds to start from**: 599 feeds of well-known news sites in all 19 languages of the pages, by topic (top stories, world, business, technology, science, sports, culture). Pick a language and your interests, tick the feeds, and subscribe to them in one go, without copying an address.
 - **One list for everything you follow**: the articles of every feed, newest first, or those of one feed.
 - **Reading in the app, like a book**: an article opens as plain text, without the page's scripts, ads, or menus, in the manner of the [Re:Leaf](https://github.com/gyedongjeon/releaf) reader: pages instead of scrolling, one or two at a time, turned with a tap on either side.
 - **Paper to your taste**: six background colors, and the text size, line spacing, and margins you choose.
@@ -79,8 +80,13 @@ subscriptions kept by the browser). They do not update themselves and their subs
 not carried over: remove the old app, install the new one, and subscribe again.
 
 ## First setup
-Paste the address of an RSS or Atom feed into **Feed URL** and choose **Subscribe**. Most news
-sites and blogs link their feed as "RSS"; copy that link's address.
+Before the first subscription, **My feed** shows **Popular feeds** in the language of the pages.
+Choose another language or some interests if you like, tick the feeds (or **Select all**), and
+choose **Subscribe**. Later, **Browse popular feeds** above the list shows them again.
+
+To follow a site that is not among them, paste the address of its RSS or Atom feed into
+**Feed URL** and choose **Subscribe**. Most news sites and blogs link their feed as "RSS"; copy
+that link's address.
 
 The pages start in your system's language where they are written in it, and in English
 otherwise. The language and the theme (system, light, or dark) can be changed under Settings.
@@ -184,7 +190,7 @@ A page must not contain a fixed text: use `t('key')`.
 
 ## Structure
 - `backend/` — FastAPI app. Everything it stores lives in `backend/data/` (git-ignored): the SQLite file `app.db` (subscriptions, their articles, and settings).
-- `frontend/` — Vue 3 app; `src/i18n/` holds the texts of the pages in each language they are written in; `/api` requests are proxied to the backend by Vite. Once built (`npm run build`), the backend serves it too, so http://127.0.0.1:8000 alone runs the whole app.
+- `frontend/` — Vue 3 app; `src/catalog.ts` lists the popular feeds (each read and found current on 2026-11-26; a feed that stops working is taken out); `src/i18n/` holds the texts of the pages in each language they are written in; `/api` requests are proxied to the backend by Vite. Once built (`npm run build`), the backend serves it too, so http://127.0.0.1:8000 alone runs the whole app.
 - `desktop/` — Electron shell that starts the backend and shows the app in a window.
 
 Built with FastAPI and SQLite (backend), Vue 3, TypeScript, Vite, Pinia, and Tailwind CSS + daisyUI

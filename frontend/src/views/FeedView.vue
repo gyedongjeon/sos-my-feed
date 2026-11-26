@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ArticleReader from '../components/ArticleReader.vue'
+import FeedCatalog from '../components/FeedCatalog.vue'
 import MorseSignal from '../components/MorseSignal.vue'
 import { t } from '../i18n'
 import { type Post, useFeedsStore } from '../stores/feeds'
@@ -11,6 +12,8 @@ const settings = useSettingsStore()
 const address = ref('')
 // The article open in the reader.
 const selected = ref<Post>()
+// Whether the popular feeds are shown once there are subscriptions; before, they always are.
+const browsing = ref(false)
 
 async function subscribe() {
   if (await feeds.subscribe(address.value)) address.value = ''
@@ -40,6 +43,8 @@ async function subscribe() {
       {{ feeds.busy ? t('feed.busy') : feeds.message ? t(feeds.message) : '' }} {{ feeds.failures.join(', ') }}
     </p>
 
+    <FeedCatalog v-if="!feeds.feeds.length || browsing" class="mb-4" />
+
     <div v-if="feeds.feeds.length" class="mb-3 flex flex-wrap items-center gap-2">
       <button
         v-for="item in [{ title: t('feed.all'), id: null }, ...feeds.feeds]"
@@ -51,7 +56,10 @@ async function subscribe() {
       >
         {{ item.title }}
       </button>
-      <button class="btn btn-sm btn-ghost ml-auto" :disabled="feeds.busy" @click="feeds.refresh()">{{ t('feed.refresh') }}</button>
+      <button class="btn btn-sm btn-ghost ml-auto" :aria-pressed="browsing" :class="{ 'btn-active': browsing }" @click="browsing = !browsing">
+        {{ t('catalog.browse') }}
+      </button>
+      <button class="btn btn-sm btn-ghost" :disabled="feeds.busy" @click="feeds.refresh()">{{ t('feed.refresh') }}</button>
     </div>
 
     <div class="grid gap-3">
@@ -73,10 +81,9 @@ async function subscribe() {
           <span class="text-2xl text-primary" aria-hidden="true">›</span>
         </div>
       </button>
-      <section v-if="!feeds.posts.length" class="card card-border bg-base-100">
+      <section v-if="feeds.feeds.length && !feeds.posts.length" class="card card-border bg-base-100">
         <div class="card-body">
-          <h2 class="card-title">{{ feeds.feeds.length ? t('feed.noPosts') : t('feed.empty') }}</h2>
-          <p v-if="!feeds.feeds.length">{{ t('feed.hint') }}</p>
+          <h2 class="card-title">{{ t('feed.noPosts') }}</h2>
         </div>
       </section>
     </div>

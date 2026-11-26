@@ -65,6 +65,27 @@ export const useFeedsStore = defineStore('feeds', {
         this.busy = false
       }
     },
+    /** Subscribes to several feeds at once, such as those chosen from the catalog, and shows
+     * every feed; resolves with how many were added. Those that cannot be read are named. */
+    async subscribeAll(chosen: { title: string; url: string }[]): Promise<number> {
+      if (this.busy) return 0
+      this.message = null
+      this.failures = []
+      this.busy = true
+      try {
+        const asked = chosen.filter((choice) => !this.feeds.some((feed) => feed.url === choice.url))
+        // Asked for together, so a slow site does not hold up the others.
+        const answers = await Promise.allSettled(asked.map((choice) => api<Feed>('/feeds', { method: 'POST', json: { url: choice.url } })))
+        const added = answers.flatMap((answer) => (answer.status === 'fulfilled' ? [answer.value] : []))
+        this.feeds.push(...added)
+        this.failures = asked.filter((_, i) => answers[i].status === 'rejected').map((choice) => choice.title)
+        this.filter = null
+        this.message = this.failures.length ? 'feed.failed' : 'catalog.added'
+        return added.length
+      } finally {
+        this.busy = false
+      }
+    },
     /** Fetches every feed again. A feed that cannot be read keeps the articles it had. */
     async refresh() {
       this.busy = true

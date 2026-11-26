@@ -75,6 +75,48 @@ describe('subscribing', () => {
   })
 })
 
+describe('subscribing to several feeds', () => {
+  const WORLD: Feed = { id: 3, title: 'World', url: 'https://example.org/world', articles: [] }
+
+  // A backend that subscribes to the given feeds by their addresses, and to no other.
+  async function readable(feeds: Feed[], subscribed: Feed[] = []) {
+    const { store } = await loaded(subscribed)
+    const fetchMock = vi.fn(async (_url: string, init?: RequestInit) => {
+      const found = feeds.find((feed) => feed.url === JSON.parse(String(init?.body)).url)
+      return found
+        ? new Response(JSON.stringify(found), { status: 201 })
+        : new Response(JSON.stringify({ detail: 'Could not read this feed.' }), { status: 502 })
+    })
+    vi.stubGlobal('fetch', fetchMock)
+    return { store, fetchMock }
+  }
+
+  it('adds every feed chosen, in the order chosen, and shows all of them', async () => {
+    const { store } = await readable([NEWS, BLOG])
+    store.filter = 7
+    expect(await store.subscribeAll([BLOG, NEWS])).toBe(2)
+    expect(store.feeds).toEqual([BLOG, NEWS])
+    expect(store.filter).toBeNull()
+    expect(store.message).toBe('catalog.added')
+    expect(store.busy).toBe(false)
+  })
+
+  it('names the feeds that could not be read and keeps the others', async () => {
+    const { store } = await readable([NEWS])
+    expect(await store.subscribeAll([NEWS, WORLD])).toBe(1)
+    expect(store.feeds).toEqual([NEWS])
+    expect(store.failures).toEqual(['World'])
+    expect(store.message).toBe('feed.failed')
+  })
+
+  it('does not ask again for a feed that is already there', async () => {
+    const { store, fetchMock } = await readable([NEWS, BLOG], [NEWS])
+    expect(await store.subscribeAll([NEWS, BLOG])).toBe(1)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(store.feeds).toEqual([NEWS, BLOG])
+  })
+})
+
 describe('refreshing', () => {
   it('takes the current articles of every feed', async () => {
     const newest = { ...NEWS, articles: [article('newest')] }
