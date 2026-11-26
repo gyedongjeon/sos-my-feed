@@ -17,7 +17,7 @@ Part of the SOS series, next to [SOS My Language](https://github.com/gyedongjeon
 ## Features
 - **Popular feeds to start from**: 803 feeds in all 19 languages of the pages: well-known news sites by topic (top stories, world, business, technology, science, sports, culture), among them the English editions of outlets from Europe, Korea, Japan, and elsewhere (DW, Le Monde, Yonhap, The Korea Times, Nikkei Asia, …), and the blogs of well-known people, such as Simon Willison, Paul Krugman, or Cory Doctorow. Pick a language and your interests, tick the feeds, and subscribe to them in one go, without copying an address.
 - **One list for everything you follow**: the articles of every feed, newest first, or those of one feed.
-- **Reading in the app, like a book**: an article opens as plain text, without the page's scripts, ads, or menus, in the manner of the [Re:Leaf](https://github.com/gyedongjeon/releaf) reader: pages instead of scrolling, one or two at a time, turned with a tap on either side.
+- **Reading in the app, like a book**: an article opens as its text and pictures, without the page's scripts, ads, or menus, in the manner of the [Re:Leaf](https://github.com/gyedongjeon/releaf) reader: pages instead of scrolling, one or two at a time, turned with a tap on either side. YouTube and Vimeo videos play in the reader; any article, and any other video, opens on the site's own page with one click.
 - **Paper to your taste**: six background colors, and the text size, line spacing, and margins you choose.
 - **Yours to keep**: the subscriptions, their articles, and your settings are stored in a file on your computer. There is no account and no server besides the one the app runs for itself.
 - **Pages in 19 languages**: English, Korean, Japanese, Chinese (Simplified and Traditional), Spanish, French, German, Italian, Portuguese, Polish, Russian, Ukrainian, Turkish, Vietnamese, Thai, Indonesian, Hindi, and Bengali, with a light and a dark theme.
@@ -100,10 +100,19 @@ Messages of the backend's errors and the dialogs of the desktop app are in Engli
 - **My feed** lists the articles of every feed by date, newest first; the buttons above the
   list show one feed only. **Refresh** reads every feed again and takes the entries it holds now
   (up to 100 per feed). A feed that cannot be read keeps the entries it had and is named.
-- Selecting an article opens it in the reader. The backend fetches the page and takes its text
-  (paragraphs, headings, and quotations) without loading its scripts or images, and the reader
-  lays it out in pages. When the page cannot be read (it is gone, needs a login, or builds its
-  text with JavaScript), the reader shows the summary the feed gave.
+- Selecting an article opens it in the reader. The backend fetches the page without running its
+  scripts and takes its text (paragraphs, headings, and quotations), its pictures with their
+  captions, and its videos, and the reader lays them out in pages. When the page cannot be read
+  (it is gone, needs a login, or builds its text with JavaScript), the reader shows the summary
+  the feed gave.
+    - **Pictures** are read by the backend too, like the article (only JPEG, PNG, GIF, WebP, and
+      AVIF), so the reader's pages load nothing from the sites themselves. A picture keeps to one
+      page; when an article shows none, the picture the page gives for sharing leads it.
+    - **Videos**: a YouTube or Vimeo video plays in the reader once its button is pressed
+      (YouTube's privacy-enhanced player, which loads nothing until then). A video the site plays
+      with its own player, as BBC's, has a button that opens it on the article's page.
+- The icon beside each article in the list, and **Open the original page** in the reader's menu,
+  open the article's page on the site in your browser.
 - **Turning pages**: tap or click the left or right fifth of the window, or use the arrow keys,
   Page Up and Page Down, or the space bar. A tap in the middle shows or hides the menu at the
   bottom, which has the page number, buttons for the previous and next page, and:
@@ -111,8 +120,10 @@ Messages of the backend's errors and the dialogs of the desktop app are in Engli
       size, the line spacing, the vertical and horizontal margins, and whether one page or two
       side by side are shown. Two pages need a window at least 720 pixels wide; a narrower one
       shows one page. The choices are saved.
+    - **Open the original page**: the article's page on the site, in your browser.
     - **Download as Markdown**: saves the article's text as a `.md` file named by the date and
-      the title, with the title, address, and date in a front matter.
+      the title, with the title, address, and date in a front matter. Pictures are linked by
+      their addresses on the site, and videos by a link.
     - **Close**, as does the Escape key.
 - The first article opens with a short guide to these, until it is finished or "Don't show
   again" is ticked.
