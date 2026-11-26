@@ -14,6 +14,8 @@ const ICONS = {
   view: '<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="9" x2="15" y1="3" y2="3"/><line x1="9" x2="15" y1="21" y2="21"/>',
   'page-1': '<rect x="5" y="4" width="14" height="16" rx="2"/>',
   'page-2': '<rect x="4" y="4" width="16" height="16" rx="2"/><line x1="12" y1="4" x2="12" y2="20"/>',
+  external: '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+  play: '<polygon points="6 3 20 12 6 21 6 3"/>',
   // An "M" over a down arrow: the Markdown mark.
   download: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M7 8v8"/><path d="M17 8v8"/><path d="M7 8l5 5l5-5"/><line x1="12" y1="8" x2="12" y2="13"/>',
 }

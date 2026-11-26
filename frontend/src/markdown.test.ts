@@ -34,6 +34,23 @@ describe('an article as Markdown', () => {
   })
 })
 
+describe('pictures and videos in Markdown', () => {
+  it('shows a picture by its address with its caption, and links a video', () => {
+    const blocks = [
+      { kind: 'image' as const, src: 'https://example.org/a.jpg', alt: 'A [ship]', text: 'At sea' },
+      { kind: 'image' as const, src: 'https://example.org/b.jpg', alt: '', text: '' },
+      { kind: 'video' as const, src: 'https://www.youtube-nocookie.com/embed/abc', text: 'Launch' },
+      { kind: 'video' as const, src: '', text: '' },
+    ]
+    expect(articleMarkdown(article, blocks, '2026-11-25').split('\n\n').slice(2)).toEqual([
+      '![A \\[ship\\]](https://example.org/a.jpg)\n*At sea*',
+      '![](https://example.org/b.jpg)',
+      '[▶ Launch](https://www.youtube-nocookie.com/embed/abc)',
+      '[▶ Video](https://example.org/ships)\n',
+    ])
+  })
+})
+
 describe('the name of the file', () => {
   it('is the date and the title, without what a file name cannot hold', () => {
     expect(markdownFileName('Ships: "at sea" / part 1?', '2026-11-25')).toBe('2026-11-25_Ships_at_sea_part_1.md')

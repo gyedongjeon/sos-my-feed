@@ -5,7 +5,7 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { api } from '../api'
 import { t } from '../i18n'
 import { articleMarkdown, markdownFileName } from '../markdown'
-import { isTap, PAGE_GAP, pageCount, type Press, READER_THEMES, SPREAD_MIN_WIDTH, tapZone } from '../reader'
+import { imageAddress, isTap, PAGE_GAP, pageCount, type Press, READER_THEMES, SPREAD_MIN_WIDTH, tapZone } from '../reader'
 import { useSettingsStore } from '../stores/settings'
 import type { Block, ReaderSettings, ReaderTheme } from '../types'
 import ReaderIcon from './ReaderIcon.vue'
@@ -29,6 +29,10 @@ const total = ref(1)
 const width = ref(0)
 const menuShown = ref(true)
 const settingsShown = ref(false)
+// The videos whose player was asked for; a player loads nothing until then.
+const playing = ref<number[]>([])
+// The pictures that could not be loaded, left out of the pages.
+const broken = ref<number[]>([])
 const controller = new AbortController()
 let observer: ResizeObserver | undefined
 let hideMenu: ReturnType<typeof setTimeout> | undefined
@@ -65,8 +69,8 @@ function toggleSettings() {
 }
 
 function keydown(event: KeyboardEvent) {
-  // A slider and a button take the keys that are theirs.
-  if ((event.target as HTMLElement).closest('input, button')) return
+  // A slider, a button, and a link take the keys that are theirs.
+  if ((event.target as HTMLElement).closest('input, button, a')) return
   const forward = ['ArrowRight', 'PageDown', ' '].includes(event.key)
   if (!forward && !['ArrowLeft', 'PageUp'].includes(event.key)) return
   event.preventDefault()
@@ -104,7 +108,7 @@ const choose = (changed: Partial<ReaderSettings>) => settings.setReader(changed)
 
 function download() {
   const date = new Date().toISOString().split('T')[0]
-  const file = new Blob([articleMarkdown(props.article, blocks.value, date)], { type: 'text/markdown' })
+  const file = new Blob([articleMarkdown(props.article, blocks.value, date, t('reader.video'))], { type: 'text/markdown' })
   const link = document.createElement('a')
   link.href = URL.createObjectURL(file)
   link.download = markdownFileName(props.article.title, date)
@@ -120,7 +124,7 @@ function tutorialDone(seen: boolean) {
 const tutorialDismissed = ref(false)
 
 watch(
-  [blocks, status, spread, () => [settings.reader.size, settings.reader.lineHeight, settings.reader.marginV, settings.reader.marginH]],
+  [blocks, broken, status, spread, () => [settings.reader.size, settings.reader.lineHeight, settings.reader.marginV, settings.reader.marginH]],
   paginate,
   { flush: 'post', deep: true },
 )
@@ -162,6 +166,8 @@ onUnmounted(() => {
       '--ink': colours.ink,
       '--rule': colours.rule,
       '--heading': colours.heading ?? colours.ink,
+      // The height of a page, which a picture or video is fitted into.
+      '--page-height': `calc(100dvh - ${2 * settings.reader.marginV}px)`,
       padding: `${settings.reader.marginV}px ${settings.reader.marginH}px`,
     }"
     @keydown="keydown"
@@ -189,10 +195,35 @@ onUnmounted(() => {
         <h1 id="reader-title">{{ article.title }}</h1>
         <p v-if="status !== 'ready'" role="status" class="note">
           {{ status === 'loading' ? t('feed.busy') : blocks.length ? t('reader.summaryOnly') : t('reader.noBody') }}
+          <a v-if="status === 'failed'" data-reader-ui :href="article.url" target="_blank" rel="noreferrer">{{ t('reader.original') }}</a>
         </p>
         <template v-for="(block, index) in blocks" :key="index">
           <h2 v-if="block.kind === 'heading'">{{ block.text }}</h2>
           <blockquote v-else-if="block.kind === 'quote'">{{ block.text }}</blockquote>
+          <figure v-else-if="block.kind === 'image'" v-show="!broken.includes(index)" class="media">
+            <img :src="imageAddress(block.src)" :alt="block.alt" @error="broken.push(index)" />
+            <figcaption v-if="block.text">{{ block.text }}</figcaption>
+          </figure>
+          <!-- A video is played only when asked for; one the site plays itself is watched there. -->
+          <figure v-else-if="block.kind === 'video'" class="media" data-reader-ui>
+            <div class="frame">
+              <iframe
+                v-if="playing.includes(index)"
+                :src="`${block.src}?autoplay=1`"
+                :title="block.text || t('reader.video')"
+                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                allowfullscreen
+                referrerpolicy="strict-origin-when-cross-origin"
+              ></iframe>
+              <button v-else-if="block.src" type="button" class="play" @click="playing.push(index)">
+                <ReaderIcon name="play" /> {{ t('reader.playVideo') }}
+              </button>
+              <a v-else class="play" :href="article.url" target="_blank" rel="noreferrer">
+                <ReaderIcon name="external" /> {{ t('reader.watchOnSite') }}
+              </a>
+            </div>
+            <figcaption v-if="block.text">{{ block.text }}</figcaption>
+          </figure>
           <p v-else>{{ block.text }}</p>
         </template>
       </article>
@@ -278,6 +309,9 @@ onUnmounted(() => {
       <button class="btn btn-ghost btn-circle btn-sm" :aria-label="t('reader.next')" :disabled="page === total" @click="turn(page + 1)">
         <ReaderIcon name="next" />
       </button>
+      <a class="btn btn-ghost btn-circle btn-sm" :href="article.url" target="_blank" rel="noreferrer" :aria-label="t('reader.original')" :title="t('reader.original')">
+        <ReaderIcon name="external" />
+      </a>
       <button class="btn btn-ghost btn-circle btn-sm" :aria-label="t('reader.download')" :title="t('reader.download')" :disabled="!blocks.length" @click="download">
         <ReaderIcon name="download" />
       </button>
@@ -359,6 +393,60 @@ h1 {
   font-family: var(--font-sans, system-ui, sans-serif);
   font-size: 0.7em;
   opacity: 0.7;
+}
+.note a {
+  margin-left: 0.25em;
+  text-decoration: underline;
+}
+/* A picture or video keeps to one page, in a frame of a fixed height, so that the pages do not
+   move when it loads. */
+.media {
+  margin: 0 0 1.5em;
+  break-inside: avoid;
+}
+.media img,
+.media .frame {
+  display: block;
+  width: 100%;
+  height: calc(var(--page-height) * 0.55);
+  border-radius: 0.25rem;
+}
+.media img {
+  object-fit: contain;
+}
+.media .frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.media iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.play {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.6em 1.1em;
+  border: 1px solid var(--rule);
+  border-radius: 9999px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.75em;
+  font-weight: 600;
+  cursor: pointer;
+}
+.play:hover {
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+}
+figcaption {
+  margin-top: 0.4em;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.7em;
+  line-height: 1.4;
+  opacity: 0.75;
 }
 blockquote {
   margin: 0 0 1.5em;

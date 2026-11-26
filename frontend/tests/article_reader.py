@@ -6,13 +6,16 @@ Run after building the frontend, with Chrome installed:
 import os
 import re
 import socket
+import struct
 import sys
 import tempfile
 import time
+import zlib
 from email.message import Message
 from pathlib import Path
 from threading import Thread
 from unittest.mock import patch
+from urllib.parse import quote
 from urllib.request import urlopen
 
 import uvicorn
@@ -25,11 +28,28 @@ from app.main import app  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
 
 
+def fixture_picture(width=1200, height=800):
+    """A grey PNG, wider than a page is read at."""
+    row = b'\x00' + b'\x88\x88\x88' * width
+    chunk = lambda kind, data: struct.pack('>I', len(data)) + kind + data + struct.pack('>I', zlib.crc32(kind + data))
+    return (b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', width, height, 8, 2, 0, 0, 0))
+            + chunk(b'IDAT', zlib.compress(row * height)) + chunk(b'IEND', b''))
+
+
 def fixture_article(url):
     if url.endswith('/offline'):
         raise OSError('Offline fixture')
     headers = Message()
+    if url.endswith('.png'):
+        headers['Content-Type'] = 'image/png'
+        return fixture_picture(), url, headers
     headers['Content-Type'] = 'text/html'
+    if url.endswith('/pictures'):
+        return (b'<article><p>Opening.</p><figure><img src="/harbour.png" alt="A harbour">'
+                b'<figcaption>Boats at dawn</figcaption></figure><p>Middle.</p>'
+                b'<div data-block="media"><figure><div data-testid="media-player-container-landscape"></div>'
+                b'<figcaption>Site clip</figcaption></figure></div>'
+                b'<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"></iframe><p>Closing.</p></article>'), url, headers
     paragraphs = [f'<p>Paragraph {i}. ' + 'Reading words. ' * 15 + '</p>' for i in range(1, 31)]
     return ('<article>' + ''.join(paragraphs) + '</article>').encode(), url, headers
 
@@ -37,7 +57,7 @@ def fixture_article(url):
 def fixture_feed(url):
     entries = [
         dict(title=title, url='https://example.org/' + path, date='', summary='Saved excerpt.')
-        for title, path in [('Long article', 'long'), ('Offline article', 'offline')]
+        for title, path in [('Long article', 'long'), ('Offline article', 'offline'), ('Pictures article', 'pictures')]
     ]
     return dict(title='Source', articles=entries)
 
@@ -151,6 +171,36 @@ def check_reader(page, url):
         assert b'SIL Open Font License' in response.read()
 
 
+def check_media(page, url):
+    """Pictures and videos in the reader, and the ways to the site's own page."""
+    page.goto(url)
+    article = 'https://example.org/pictures'
+    # Each article in the list also leads to its page on the site.
+    expect(page.get_by_role('link', name='Open the original page: Pictures article')).to_have_attribute('href', article)
+    page.get_by_role('button', name='Source Pictures article').click()
+    dialog = page.get_by_role('dialog')
+    sheet = dialog.locator('article')
+
+    # The picture is read through the backend and fits on one page, its caption under it.
+    picture = dialog.get_by_role('img', name='A harbour')
+    expect(picture).to_have_attribute('src', '/api/image?url=' + quote('https://example.org/harbour.png', safe=''))
+    page.wait_for_function('() => document.querySelector("dialog figure img").naturalWidth === 1200', timeout=5000)
+    assert picture.evaluate('(img, sheet) => img.getBoundingClientRect().height < sheet.clientHeight', sheet.element_handle())
+    expect(dialog.get_by_text('Boats at dawn', exact=True)).to_be_attached()
+
+    # A video the site plays itself is watched there; a YouTube one loads nothing until asked for.
+    expect(dialog.get_by_role('link', name='Watch on the original page')).to_have_attribute('href', article)
+    expect(dialog.get_by_role('button', name='Play video')).to_be_attached()
+    expect(dialog.locator('iframe')).to_have_count(0)
+
+    # The menu opens the site's own page, outside the reader.
+    original = dialog.locator('.menu-bar').get_by_role('link', name='Open the original page')
+    expect(original).to_have_attribute('href', article)
+    expect(original).to_have_attribute('target', '_blank')
+    page.keyboard.press('Escape')
+    expect(dialog).to_have_count(0)
+
+
 if __name__ == '__main__':
     with socket.socket() as probe:
         probe.bind(('127.0.0.1', 0))
@@ -174,6 +224,7 @@ if __name__ == '__main__':
             browser = playwright.chromium.launch(channel='chrome')
             page = browser.new_page(viewport=dict(width=990, height=750))
             check_reader(page, address)
+            check_media(page, address)
             browser.close()
         finally:
             server.should_exit = True

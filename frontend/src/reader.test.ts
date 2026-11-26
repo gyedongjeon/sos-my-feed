@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isTap, PAGE_GAP, pageCount, READER_THEMES, tapZone } from './reader'
+import { imageAddress, isTap, PAGE_GAP, pageCount, READER_THEMES, tapZone } from './reader'
 
 describe('a tap on the page', () => {
   it('turns back on the left fifth and forward on the right fifth', () => {
@@ -53,5 +53,11 @@ describe('the number of pages', () => {
 describe('the colours of the paper', () => {
   it('are the six of Re:Leaf, light first', () => {
     expect(Object.keys(READER_THEMES)).toEqual(['light', 'sepia', 'mint', 'forest', 'gray', 'dark'])
+  })
+})
+
+describe('a picture of an article', () => {
+  it('is asked of the backend, which reads it like the article', () => {
+    expect(imageAddress('https://ichef.bbci.co.uk/a.jpg?w=800&q=1')).toBe('/api/image?url=https%3A%2F%2Fichef.bbci.co.uk%2Fa.jpg%3Fw%3D800%26q%3D1')
   })
 })
