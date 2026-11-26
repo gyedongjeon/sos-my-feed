@@ -1,12 +1,29 @@
 // An article as a Markdown file, as Re:Leaf saves one.
 import type { Block } from './types'
 
-const line = (block: Block) => (block.kind === 'heading' ? `## ${block.text}` : block.kind === 'quote' ? `> ${block.text}` : block.text)
+const label = (text: string) => text.replace(/[[\]]/g, '\\$&')
 
-/** The article as Markdown: where it came from in a front matter, then its title and text. */
-export function articleMarkdown(article: { title: string; url: string }, blocks: Block[], date: string): string {
+// A piece in Markdown; a video the reader cannot play links to the article's page.
+function line(block: Block, page: string, video: string): string {
+  switch (block.kind) {
+    case 'heading':
+      return `## ${block.text}`
+    case 'quote':
+      return `> ${block.text}`
+    case 'image':
+      return `![${label(block.alt)}](${block.src})` + (block.text ? `\n*${block.text}*` : '')
+    case 'video':
+      return `[▶ ${label(block.text || video)}](${block.src || page})`
+    default:
+      return block.text
+  }
+}
+
+/** The article as Markdown: where it came from in a front matter, then its title, text, and
+ * pictures (by their addresses on the site). */
+export function articleMarkdown(article: { title: string; url: string }, blocks: Block[], date: string, video = 'Video'): string {
   const frontMatter = ['---', `title: "${article.title.replace(/"/g, '\\"')}"`, `url: "${article.url}"`, `date: ${date}`, '---']
-  return [frontMatter.join('\n'), `# ${article.title}`, ...blocks.map(line)].join('\n\n') + '\n'
+  return [frontMatter.join('\n'), `# ${article.title}`, ...blocks.map((block) => line(block, article.url, video))].join('\n\n') + '\n'
 }
 
 /** A file name from the date and the title, without what a file name cannot hold. */

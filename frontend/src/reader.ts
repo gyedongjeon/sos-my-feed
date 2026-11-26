@@ -46,3 +46,9 @@ export function isTap(down: Press, up: Press): boolean {
 export function pageCount(contentWidth: number, shownWidth: number): number {
   return Math.max(1, Math.ceil((contentWidth + PAGE_GAP - 10) / (shownWidth + PAGE_GAP)))
 }
+
+/** Where the reader shows a picture of an article from: the backend reads it, as it reads the
+ * article, so the pages load nothing from the sites directly. */
+export function imageAddress(src: string): string {
+  return `/api/image?url=${encodeURIComponent(src)}`
+}

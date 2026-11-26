@@ -29,11 +29,14 @@ export interface Refreshed {
   failed: string[]
 }
 
-/** A piece of an article's text, in reading order. */
-export interface Block {
-  kind: 'paragraph' | 'heading' | 'quote'
-  text: string
-}
+/** A piece of an article, in reading order: text, a picture, or a video. */
+export type Block =
+  | { kind: 'paragraph' | 'heading' | 'quote'; text: string }
+  /** A picture, with its caption (`text`), which may be empty. */
+  | { kind: 'image'; src: string; alt: string; text: string }
+  /** A video, with its caption; `src` is a YouTube or Vimeo player, or empty when the video
+   * plays only on the article's page. */
+  | { kind: 'video'; src: string; text: string }
 
 /** A colour of the paper an article is read on. */
 export type ReaderTheme = 'light' | 'sepia' | 'mint' | 'forest' | 'gray' | 'dark'

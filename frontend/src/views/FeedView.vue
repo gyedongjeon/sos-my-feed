@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import ArticleReader from '../components/ArticleReader.vue'
 import FeedCatalog from '../components/FeedCatalog.vue'
 import MorseSignal from '../components/MorseSignal.vue'
+import ReaderIcon from '../components/ReaderIcon.vue'
 import { t } from '../i18n'
 import { type Post, useFeedsStore } from '../stores/feeds'
 import { useSettingsStore } from '../stores/settings'
@@ -63,14 +64,13 @@ async function subscribe() {
     </div>
 
     <div class="grid gap-3">
-      <button
+      <!-- An article opens in the reader; the icon beside it opens the site's own page instead. -->
+      <div
         v-for="post in feeds.posts"
         :key="`${post.feed.id} ${post.article.url}`"
-        aria-haspopup="dialog"
-        class="card card-border bg-base-100 text-left transition hover:border-primary"
-        @click="selected = post"
+        class="card card-border flex-row items-center bg-base-100 transition hover:border-primary"
       >
-        <div class="card-body flex-row items-center gap-4">
+        <button aria-haspopup="dialog" class="card-body min-w-0 grow flex-row items-center gap-4 text-left" @click="selected = post">
           <div class="min-w-0 grow">
             <p class="text-xs text-base-content/65">
               {{ post.feed.title }} <span v-if="post.time">· {{ new Date(post.time).toLocaleDateString(settings.language) }}</span>
@@ -79,8 +79,18 @@ async function subscribe() {
             <p class="line-clamp-2 text-sm text-base-content/70">{{ post.article.summary }}</p>
           </div>
           <span class="text-2xl text-primary" aria-hidden="true">›</span>
-        </div>
-      </button>
+        </button>
+        <a
+          class="btn btn-ghost btn-circle btn-sm mr-3 shrink-0 text-base-content/60"
+          :href="post.article.url"
+          target="_blank"
+          rel="noreferrer"
+          :aria-label="`${t('reader.original')}: ${post.article.title}`"
+          :title="t('reader.original')"
+        >
+          <ReaderIcon name="external" />
+        </a>
+      </div>
       <section v-if="feeds.feeds.length && !feeds.posts.length" class="card card-border bg-base-100">
         <div class="card-body">
           <h2 class="card-title">{{ t('feed.noPosts') }}</h2>
