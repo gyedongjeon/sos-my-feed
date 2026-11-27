@@ -99,6 +99,31 @@ export const useFeedsStore = defineStore('feeds', {
         this.busy = false
       }
     },
+    /** Subscribes to the feeds an OPML file lists, as exported by another feed reader;
+     * resolves with how many were added. */
+    async importOpml(text: string): Promise<number> {
+      if (this.busy) return 0
+      this.message = null
+      this.failures = []
+      this.busy = true
+      let listed: { title: string; url: string }[]
+      try {
+        listed = await api('/opml', { method: 'POST', body: text, headers: { 'Content-Type': 'text/x-opml' } })
+      } catch {
+        this.message = 'opml.invalid'
+        return 0
+      } finally {
+        this.busy = false
+      }
+      const fresh = listed.filter((choice) => !this.feeds.some((feed) => feed.url === choice.url))
+      if (!fresh.length) {
+        this.message = 'opml.nothing'
+        return 0
+      }
+      const added = await this.subscribeAll(fresh)
+      if (this.message === 'catalog.added') this.message = 'opml.added'
+      return added
+    },
     /** Fetches every feed again. A feed that cannot be read keeps the articles it had. A quiet
      * refresh, done on a schedule, says nothing of how it went and waits for its next turn
      * when something else is under way. */

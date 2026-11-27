@@ -103,6 +103,13 @@ const id: Record<MessageKey, string> = {
   'settings.openSource': 'Open source',
   'settings.openSourceBody': 'SOS My Feed adalah perangkat lunak open source berlisensi MIT, dan dibuat dengan karya-karya di bawah ini.',
   'settings.licenses': 'Teks lisensi lengkap',
+
+  'opml.intro': "Pindahkan langganan dari pembaca feed lain, atau ke pembaca lain, dengan file OPML.",
+  'opml.import': "Impor OPML",
+  'opml.export': "Ekspor OPML",
+  'opml.added': "Berlangganan feed dari file.",
+  'opml.nothing': "File tidak berisi feed yang belum Anda langgani.",
+  'opml.invalid': "File ini tidak dapat dibaca sebagai OPML.",
 }
 
 export default id

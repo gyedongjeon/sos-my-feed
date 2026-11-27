@@ -102,6 +102,13 @@ const ko: Record<MessageKey, string> = {
   'settings.openSource': '오픈 소스',
   'settings.openSourceBody': 'SOS My Feed는 MIT 라이선스의 오픈 소스입니다. 아래의 작업물로 만들어졌습니다.',
   'settings.licenses': '라이선스 전문',
+
+  'opml.intro': "OPML 파일로 다른 피드 리더의 구독을 가져오거나 내보내세요.",
+  'opml.import': "OPML 가져오기",
+  'opml.export': "OPML 내보내기",
+  'opml.added': "파일에 있는 피드를 구독했습니다.",
+  'opml.nothing': "파일에 새로 구독할 피드가 없습니다.",
+  'opml.invalid': "OPML 파일로 읽을 수 없습니다.",
 }
 
 export default ko

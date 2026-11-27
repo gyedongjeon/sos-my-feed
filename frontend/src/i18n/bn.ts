@@ -103,6 +103,13 @@ const bn: Record<MessageKey, string> = {
   'settings.openSource': 'ওপেন সোর্স',
   'settings.openSourceBody': 'SOS My Feed MIT লাইসেন্সের অধীনে ওপেন সোর্স। নিচের কাজগুলো ব্যবহার করে এটি তৈরি।',
   'settings.licenses': 'লাইসেন্সের পূর্ণ পাঠ',
+
+  'opml.intro': "OPML ফাইল দিয়ে অন্য ফিড রিডার থেকে সাবস্ক্রিপশন আনুন বা সেখানে নিয়ে যান।",
+  'opml.import': "OPML ইমপোর্ট",
+  'opml.export': "OPML এক্সপোর্ট",
+  'opml.added': "ফাইলের ফিডগুলোতে সাবস্ক্রাইব করা হয়েছে।",
+  'opml.nothing': "ফাইলে এমন কোনো ফিড নেই যাতে আপনি আগে সাবস্ক্রাইব করেননি।",
+  'opml.invalid': "এই ফাইলটি OPML হিসেবে পড়া যায়নি।",
 }
 
 export default bn

@@ -103,6 +103,13 @@ const zhHans: Record<MessageKey, string> = {
   'settings.openSource': '开源',
   'settings.openSourceBody': 'SOS My Feed 是采用 MIT 许可证的开源软件，基于以下项目构建。',
   'settings.licenses': '许可证全文',
+
+  'opml.intro': "用 OPML 文件在其他阅读器之间迁移订阅。",
+  'opml.import': "导入 OPML",
+  'opml.export': "导出 OPML",
+  'opml.added': "已订阅文件中的订阅源。",
+  'opml.nothing': "文件中没有尚未订阅的订阅源。",
+  'opml.invalid': "无法将此文件读取为 OPML。",
 }
 
 export default zhHans

@@ -103,6 +103,13 @@ const hi: Record<MessageKey, string> = {
   'settings.openSource': 'ओपन सोर्स',
   'settings.openSourceBody': 'SOS My Feed, MIT लाइसेंस के तहत ओपन सोर्स है। इसे नीचे दिए गए प्रोजेक्ट की मदद से बनाया गया है।',
   'settings.licenses': 'लाइसेंस के पूरे टेक्स्ट',
+
+  'opml.intro': "OPML फ़ाइल से अपनी सदस्यताएँ किसी दूसरे फ़ीड रीडर से लाएँ या उसमें ले जाएँ।",
+  'opml.import': "OPML इंपोर्ट करें",
+  'opml.export': "OPML एक्सपोर्ट करें",
+  'opml.added': "फ़ाइल की फ़ीड की सदस्यता ले ली गई।",
+  'opml.nothing': "फ़ाइल में ऐसी कोई फ़ीड नहीं है जिसकी सदस्यता आपने पहले से न ली हो।",
+  'opml.invalid': "यह फ़ाइल OPML के रूप में पढ़ी नहीं जा सकी।",
 }
 
 export default hi

@@ -103,6 +103,13 @@ const uk: Record<MessageKey, string> = {
   'settings.openSource': 'Відкритий код',
   'settings.openSourceBody': 'SOS My Feed — програма з відкритим кодом за ліцензією MIT. Її створено з використанням перелічених нижче розробок.',
   'settings.licenses': 'Повні тексти ліцензій',
+
+  'opml.intro': "Перенесіть підписки з іншої читалки стрічок або до неї за допомогою файлу OPML.",
+  'opml.import': "Імпорт OPML",
+  'opml.export': "Експорт OPML",
+  'opml.added': "Ви підписалися на стрічки з файлу.",
+  'opml.nothing': "У файлі немає стрічок, на які ви ще не підписані.",
+  'opml.invalid': "Не вдалося прочитати цей файл як OPML.",
 }
 
 export default uk
