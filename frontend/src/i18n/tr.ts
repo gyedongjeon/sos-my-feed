@@ -20,6 +20,12 @@ const tr: Record<MessageKey, string> = {
   'feed.busy': "Yükleniyor…",
   'feed.loadFailed': "Akışlarınız yüklenemedi: {error}",
   'feed.updated': "Akışlar güncellendi.",
+  'feed.unreadOnly': "Yalnızca okunmamışlar",
+  'feed.markAllRead': "Tümünü okundu say",
+  'feed.markRead': "Okundu olarak işaretle",
+  'feed.markUnread': "Okunmadı olarak işaretle",
+  'feed.allRead': "Hepsini okudunuz.",
+  'feed.markFailed': "Okuduklarınız kaydedilemedi: {error}",
 
   'catalog.title': 'Popüler akışlar',
   'catalog.intro': 'Bir dil ve ilgi alanlarınızı seçin, ardından birkaç akışa birden abone olun.',

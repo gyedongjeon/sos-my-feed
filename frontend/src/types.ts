@@ -13,6 +13,7 @@ export interface Article {
   summary: string
   /** As the feed wrote it; empty when the feed gave none. */
   date: string
+  read: boolean
 }
 
 export interface Feed {

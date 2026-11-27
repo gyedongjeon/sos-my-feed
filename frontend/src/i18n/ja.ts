@@ -20,6 +20,12 @@ const ja: Record<MessageKey, string> = {
   'feed.busy': "読み込み中…",
   'feed.loadFailed': "フィードを読み込めませんでした: {error}",
   'feed.updated': "フィードを更新しました。",
+  'feed.unreadOnly': "未読のみ",
+  'feed.markAllRead': "すべて既読にする",
+  'feed.markRead': "既読にする",
+  'feed.markUnread': "未読にする",
+  'feed.allRead': "すべて読みました。",
+  'feed.markFailed': "既読を保存できませんでした: {error}",
 
   'catalog.title': '人気のフィード',
   'catalog.intro': '言語と興味のある分野を選んで、複数のフィードをまとめて購読しましょう。',

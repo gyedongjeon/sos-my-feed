@@ -19,6 +19,12 @@ const ko: Record<MessageKey, string> = {
   'feed.busy': '불러오는 중…',
   'feed.loadFailed': '피드 목록을 불러오지 못했습니다: {error}',
   'feed.updated': '피드를 업데이트했습니다.',
+  'feed.unreadOnly': "안 읽은 글만",
+  'feed.markAllRead': "모두 읽음으로 표시",
+  'feed.markRead': "읽음으로 표시",
+  'feed.markUnread': "안 읽음으로 표시",
+  'feed.allRead': "모두 읽었습니다.",
+  'feed.markFailed': "읽은 글을 저장하지 못했습니다: {error}",
 
   'catalog.title': '인기 피드',
   'catalog.intro': '언어와 관심사를 고르고, 여러 피드를 한 번에 구독하세요.',

@@ -20,6 +20,12 @@ const id: Record<MessageKey, string> = {
   'feed.busy': "Memuat…",
   'feed.loadFailed': "Feed Anda tidak dapat dimuat: {error}",
   'feed.updated': "Feed diperbarui.",
+  'feed.unreadOnly': "Hanya yang belum dibaca",
+  'feed.markAllRead': "Tandai semua sudah dibaca",
+  'feed.markRead': "Tandai sudah dibaca",
+  'feed.markUnread': "Tandai belum dibaca",
+  'feed.allRead': "Semua sudah dibaca.",
+  'feed.markFailed': "Tidak dapat menyimpan yang sudah dibaca: {error}",
 
   'catalog.title': 'Feed populer',
   'catalog.intro': 'Pilih bahasa dan minat Anda, lalu berlangganan beberapa feed sekaligus.',

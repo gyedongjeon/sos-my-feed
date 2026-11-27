@@ -20,6 +20,12 @@ const zhHans: Record<MessageKey, string> = {
   'feed.busy': "加载中…",
   'feed.loadFailed': "无法加载你的订阅源：{error}",
   'feed.updated': "订阅源已更新。",
+  'feed.unreadOnly': "仅未读",
+  'feed.markAllRead': "全部标为已读",
+  'feed.markRead': "标为已读",
+  'feed.markUnread': "标为未读",
+  'feed.allRead': "已全部读完。",
+  'feed.markFailed': "无法保存阅读记录：{error}",
 
   'catalog.title': '热门订阅源',
   'catalog.intro': '选择语言和感兴趣的主题，一次订阅多个订阅源。',

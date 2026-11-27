@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Feed } from '../types'
 import { useFeedsStore } from './feeds'
 
-const article = (path: string, date = '') => ({ title: path, url: `https://example.org/${path}`, summary: '', date })
+const article = (path: string, date = '', read = false) => ({ title: path, url: `https://example.org/${path}`, summary: '', date, read })
 const NEWS: Feed = { id: 1, title: 'News', url: 'https://example.org/news', articles: [article('old', '2026-11-01'), article('new', '2026-11-20')] }
 const BLOG: Feed = { id: 2, title: 'Blog', url: 'https://example.org/blog', articles: [article('post', '2026-11-10')] }
 
@@ -153,6 +153,62 @@ describe('the articles shown', () => {
     const { store } = await loaded([NEWS, BLOG])
     store.filter = BLOG.id
     expect(store.posts.map((post) => post.article.title)).toEqual(['post'])
+  })
+})
+
+describe('reading', () => {
+  const MIXED: Feed = { ...NEWS, articles: [article('old', '2026-11-01', true), article('new', '2026-11-20')] }
+
+  it('counts the unread articles of every feed or of one', async () => {
+    const { store } = await loaded([MIXED, BLOG])
+    expect(store.unread(null)).toBe(2)
+    expect(store.unread(NEWS.id)).toBe(1)
+    expect(store.unread(BLOG.id)).toBe(1)
+  })
+
+  it('shows only the unread articles when asked to', async () => {
+    const { store } = await loaded([MIXED, BLOG])
+    store.unreadOnly = true
+    expect(store.posts.map((post) => post.article.title)).toEqual(['new', 'post'])
+  })
+
+  it('marks an article read and tells the backend', async () => {
+    const { store, fetchMock } = await loaded([NEWS], { 'PUT /api/feeds/1/read': { status: 204 } })
+    await store.mark([store.posts[0]], true)
+    expect(store.feeds[0].articles.map((a) => a.read)).toEqual([false, true])
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(fetchMock.mock.calls[0][1]!.body).toBe('{"urls":["https://example.org/new"],"read":true}')
+  })
+
+  it('does not ask the backend about an article that is already marked so', async () => {
+    const { store, fetchMock } = await loaded([MIXED])
+    await store.mark(store.posts.filter((post) => post.article.read), true)
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('marks every article shown read, feed by feed', async () => {
+    const { store, fetchMock } = await loaded([NEWS, BLOG], {
+      'PUT /api/feeds/1/read': { status: 204 },
+      'PUT /api/feeds/2/read': { status: 204 },
+    })
+    await store.markAllRead()
+    expect(store.unread(null)).toBe(0)
+    expect(fetchMock.mock.calls.map((call) => call[0]).sort()).toEqual(['/api/feeds/1/read', '/api/feeds/2/read'])
+  })
+
+  it("marks only the chosen feed's articles read", async () => {
+    const { store } = await loaded([NEWS, BLOG], { 'PUT /api/feeds/2/read': { status: 204 } })
+    store.filter = BLOG.id
+    await store.markAllRead()
+    expect(store.unread(NEWS.id)).toBe(2)
+    expect(store.unread(BLOG.id)).toBe(0)
+  })
+
+  it('takes the mark back and reports an error when the backend refuses', async () => {
+    const { store } = await loaded([NEWS], { 'PUT /api/feeds/1/read': { status: 500, body: { detail: 'disk full' } } })
+    await store.mark(store.posts, true)
+    expect(store.unread(null)).toBe(2)
+    expect(store.error).toBe('Could not save what you have read: disk full')
   })
 })
 

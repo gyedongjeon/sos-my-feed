@@ -20,6 +20,12 @@ const zhHant: Record<MessageKey, string> = {
   'feed.busy': "載入中…",
   'feed.loadFailed': "無法載入你的訂閱源：{error}",
   'feed.updated': "訂閱源已更新。",
+  'feed.unreadOnly': "僅未讀",
+  'feed.markAllRead': "全部標為已讀",
+  'feed.markRead': "標為已讀",
+  'feed.markUnread': "標為未讀",
+  'feed.allRead': "已全部讀完。",
+  'feed.markFailed': "無法儲存閱讀紀錄：{error}",
 
   'catalog.title': '熱門訂閱源',
   'catalog.intro': '選擇語言和感興趣的主題，一次訂閱多個訂閱源。',

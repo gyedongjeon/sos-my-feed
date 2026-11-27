@@ -16,6 +16,8 @@ export const useFeedsStore = defineStore('feeds', {
     feeds: [] as Feed[],
     // The feed whose articles are shown; null shows every feed's.
     filter: null as number | null,
+    // Whether only the articles not read yet are shown.
+    unreadOnly: false,
     busy: false,
     // What the last subscribing or refreshing came to; null when there is nothing to say.
     message: null as MessageKey | null,
@@ -29,8 +31,19 @@ export const useFeedsStore = defineStore('feeds', {
     posts: (state): Post[] =>
       state.feeds
         .filter((feed) => state.filter === null || feed.id === state.filter)
-        .flatMap((feed) => feed.articles.map((article) => ({ article, feed, time: Date.parse(article.date) || 0 })))
+        .flatMap((feed) =>
+          feed.articles
+            .filter((article) => !state.unreadOnly || !article.read)
+            .map((article) => ({ article, feed, time: Date.parse(article.date) || 0 })),
+        )
         .sort((a, b) => b.time - a.time),
+    /** How many articles are not read yet, of one feed or (null) of every feed. */
+    unread:
+      (state) =>
+      (id: number | null): number =>
+        state.feeds
+          .filter((feed) => id === null || feed.id === id)
+          .reduce((count, feed) => count + feed.articles.filter((article) => !article.read).length, 0),
   },
   actions: {
     async load() {
@@ -101,6 +114,28 @@ export const useFeedsStore = defineStore('feeds', {
       } finally {
         this.busy = false
       }
+    },
+    /** Marks articles read, or unread again. The mark is shown at once and taken back if the
+     * backend cannot keep it. */
+    async mark(posts: Post[], read: boolean) {
+      const changed = posts.filter((post) => post.article.read !== read)
+      if (!changed.length) return
+      this.error = ''
+      for (const post of changed) post.article.read = read
+      const byFeed = new Map<number, string[]>()
+      for (const post of changed) byFeed.set(post.feed.id, [...(byFeed.get(post.feed.id) ?? []), post.article.url])
+      const answers = await Promise.allSettled(
+        [...byFeed].map(([id, urls]) => api(`/feeds/${id}/read`, { method: 'PUT', json: { urls, read } })),
+      )
+      const refused = answers.find((answer): answer is PromiseRejectedResult => answer.status === 'rejected')
+      if (!refused) return
+      const failed = new Set([...byFeed.keys()].filter((_, i) => answers[i].status === 'rejected'))
+      for (const post of changed) if (failed.has(post.feed.id)) post.article.read = !read
+      this.error = t('feed.markFailed', { error: (refused.reason as Error).message })
+    },
+    /** Marks every article shown read. */
+    markAllRead() {
+      return this.mark(this.posts, true)
     },
     /** Unsubscribes from a feed; resolves with whether it was removed. */
     async remove(id: number): Promise<boolean> {

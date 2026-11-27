@@ -18,6 +18,7 @@ class Article(BaseModel):
     summary: str
     # As the feed wrote it; empty when the feed gave none.
     date: str
+    read: bool
 
 
 class Feed(BaseModel):
@@ -31,6 +32,12 @@ class Subscription(BaseModel):
     url: str = Field(min_length=1, max_length=2000)
 
 
+class Marked(BaseModel):
+    # The addresses of articles of the feed; any other address is ignored.
+    urls: list[str] = Field(max_length=1000)
+    read: bool
+
+
 class Refreshed(BaseModel):
     feeds: list[Feed]
     # The titles of the feeds that could not be read; they keep the articles they had.
@@ -39,7 +46,11 @@ class Refreshed(BaseModel):
 
 def _feeds(conn: sqlite3.Connection) -> list[Feed]:
     articles: dict[int, list[Article]] = {}
-    for row in conn.execute("SELECT feed_id, title, url, summary, date FROM articles ORDER BY id"):
+    rows = conn.execute(
+        "SELECT a.feed_id, a.title, a.url, a.summary, a.date, r.url IS NOT NULL AS read FROM articles a"
+        " LEFT JOIN read_articles r ON r.feed_id = a.feed_id AND r.url = a.url ORDER BY a.id"
+    )
+    for row in rows:
         articles.setdefault(row["feed_id"], []).append(Article(**{key: row[key] for key in Article.model_fields}))
     return [
         Feed(id=row["id"], url=row["url"], title=row["title"], articles=articles.get(row["id"], []))
@@ -54,6 +65,10 @@ def _keep(conn: sqlite3.Connection, feed_id: int, read: dict) -> None:
     conn.executemany(
         "INSERT INTO articles (feed_id, title, url, summary, date) VALUES (?, ?, ?, ?, ?)",
         [(feed_id, a["title"], a["url"], a["summary"], a["date"]) for a in read["articles"]],
+    )
+    conn.execute(
+        "DELETE FROM read_articles WHERE feed_id = ? AND url NOT IN (SELECT url FROM articles WHERE feed_id = ?)",
+        (feed_id, feed_id),
     )
 
 
@@ -99,6 +114,24 @@ def refresh() -> Refreshed:
             _keep(conn, feed["id"], read)
     with get_connection() as conn:
         return Refreshed(feeds=_feeds(conn), failed=failed)
+
+
+@router.put("/feeds/{feed_id}/read", status_code=204)
+def mark(feed_id: int, body: Marked) -> Response:
+    """Marks articles of a feed as read, or as unread again."""
+    with get_connection() as conn:
+        if not conn.execute("SELECT 1 FROM feeds WHERE id = ?", (feed_id,)).fetchone():
+            raise HTTPException(status_code=404, detail="No such feed.")
+        for url in set(body.urls):
+            if body.read:
+                conn.execute(
+                    "INSERT OR IGNORE INTO read_articles (feed_id, url)"
+                    " SELECT feed_id, url FROM articles WHERE feed_id = ? AND url = ?",
+                    (feed_id, url),
+                )
+            else:
+                conn.execute("DELETE FROM read_articles WHERE feed_id = ? AND url = ?", (feed_id, url))
+    return Response(status_code=204)
 
 
 @router.delete("/feeds/{feed_id}", status_code=204)

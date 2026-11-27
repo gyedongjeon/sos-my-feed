@@ -20,6 +20,12 @@ const ru: Record<MessageKey, string> = {
   'feed.busy': "Загрузка…",
   'feed.loadFailed': "Не удалось загрузить ленты: {error}",
   'feed.updated': "Ленты обновлены.",
+  'feed.unreadOnly': "Только непрочитанные",
+  'feed.markAllRead': "Отметить всё как прочитанное",
+  'feed.markRead': "Отметить как прочитанное",
+  'feed.markUnread': "Отметить как непрочитанное",
+  'feed.allRead': "Всё прочитано.",
+  'feed.markFailed': "Не удалось сохранить прочитанное: {error}",
 
   'catalog.title': 'Популярные ленты',
   'catalog.intro': 'Выберите язык и интересы, затем подпишитесь сразу на несколько лент.',

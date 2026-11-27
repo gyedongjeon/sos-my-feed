@@ -18,6 +18,12 @@ export default {
   'feed.busy': 'Loading…',
   'feed.loadFailed': 'Could not load your feeds: {error}',
   'feed.updated': 'Feeds updated.',
+  'feed.unreadOnly': 'Unread only',
+  'feed.markAllRead': 'Mark all as read',
+  'feed.markRead': 'Mark as read',
+  'feed.markUnread': 'Mark as unread',
+  'feed.allRead': 'You are all caught up.',
+  'feed.markFailed': 'Could not save what you have read: {error}',
 
   'catalog.title': 'Popular feeds',
   'catalog.intro': 'Choose a language and what interests you, then subscribe to several feeds at once.',

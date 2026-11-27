@@ -20,6 +20,12 @@ const uk: Record<MessageKey, string> = {
   'feed.busy': "Завантаження…",
   'feed.loadFailed': "Не вдалося завантажити стрічки: {error}",
   'feed.updated': "Стрічки оновлено.",
+  'feed.unreadOnly': "Лише непрочитані",
+  'feed.markAllRead': "Позначити все як прочитане",
+  'feed.markRead': "Позначити як прочитане",
+  'feed.markUnread': "Позначити як непрочитане",
+  'feed.allRead': "Усе прочитано.",
+  'feed.markFailed': "Не вдалося зберегти прочитане: {error}",
 
   'catalog.title': 'Популярні стрічки',
   'catalog.intro': 'Виберіть мову та інтереси, а потім підпишіться одразу на кілька стрічок.',

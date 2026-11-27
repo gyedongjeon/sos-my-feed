@@ -20,6 +20,12 @@ const vi: Record<MessageKey, string> = {
   'feed.busy': "Đang tải…",
   'feed.loadFailed': "Không tải được các nguồn tin: {error}",
   'feed.updated': "Đã cập nhật các nguồn tin.",
+  'feed.unreadOnly': "Chỉ bài chưa đọc",
+  'feed.markAllRead': "Đánh dấu tất cả là đã đọc",
+  'feed.markRead': "Đánh dấu đã đọc",
+  'feed.markUnread': "Đánh dấu chưa đọc",
+  'feed.allRead': "Bạn đã đọc hết.",
+  'feed.markFailed': "Không lưu được những bài đã đọc: {error}",
 
   'catalog.title': 'Nguồn tin phổ biến',
   'catalog.intro': 'Chọn ngôn ngữ và chủ đề bạn quan tâm, rồi đăng ký nhiều nguồn tin cùng lúc.',
