@@ -59,7 +59,8 @@ Everything the installed app puts on disk is in one folder,
 - `data/` — your subscriptions, their articles, and your settings (`app.db`)
 - `venv/`, `uv-cache/`, `python/` — the Python packages and Python itself, set up on the first launch
 
-To back up or move your subscriptions, copy `data/`. Deleting the app leaves this folder in
+To back up or move your subscriptions, copy `data/` (or, for the subscriptions alone, use
+**Export OPML** under Settings). Deleting the app leaves this folder in
 place, so to uninstall completely, move the app to the Trash and then delete that folder.
 
 ### Updates
@@ -87,6 +88,11 @@ choose **Subscribe**. Later, **Browse popular feeds** above the list shows them 
 To follow a site that is not among them, paste the address of its RSS or Atom feed into
 **Feed URL** and choose **Subscribe**. Most news sites and blogs link their feed as "RSS"; copy
 that link's address.
+
+Coming from another feed reader? Export your subscriptions there as an OPML file, then choose
+**Import OPML** under Settings → Subscriptions: every feed in it is subscribed to, folders and
+all, except those you follow already, and the ones that cannot be read are named. **Export OPML**
+saves yours the same way, for another reader or as a backup.
 
 The pages start in your system's language where they are written in it, and in English
 otherwise. The language and the theme (system, light, or dark) can be changed under Settings.
