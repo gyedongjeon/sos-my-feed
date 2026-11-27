@@ -99,18 +99,24 @@ export const useFeedsStore = defineStore('feeds', {
         this.busy = false
       }
     },
-    /** Fetches every feed again. A feed that cannot be read keeps the articles it had. */
-    async refresh() {
+    /** Fetches every feed again. A feed that cannot be read keeps the articles it had. A quiet
+     * refresh, done on a schedule, says nothing of how it went and waits for its next turn
+     * when something else is under way. */
+    async refresh({ quiet = false } = {}) {
+      if (quiet && this.busy) return
       this.busy = true
-      this.message = null
-      this.failures = []
+      if (!quiet) {
+        this.message = null
+        this.failures = []
+      }
       try {
         const { feeds, failed } = await api<Refreshed>('/feeds/refresh', { method: 'POST' })
         this.feeds = feeds
+        if (quiet) return
         this.failures = failed
         this.message = failed.length ? 'feed.failed' : 'feed.updated'
       } catch {
-        this.message = 'feed.failed'
+        if (!quiet) this.message = 'feed.failed'
       } finally {
         this.busy = false
       }
