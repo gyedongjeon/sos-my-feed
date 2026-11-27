@@ -134,6 +134,23 @@ describe('refreshing', () => {
     expect(store.message).toBe('feed.failed')
   })
 
+  it('says nothing when it is done on its own', async () => {
+    const newest = { ...NEWS, articles: [article('newest')] }
+    const { store } = await loaded([NEWS], { 'POST /api/feeds/refresh': { body: { feeds: [newest], failed: ['Blog'] } } })
+    store.message = 'catalog.added'
+    await store.refresh({ quiet: true })
+    expect(store.feeds).toEqual([newest])
+    expect(store.message).toBe('catalog.added')
+    expect(store.failures).toEqual([])
+  })
+
+  it('is not done on its own while something else is under way', async () => {
+    const { store, fetchMock } = await loaded([NEWS])
+    store.busy = true
+    await store.refresh({ quiet: true })
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
   it('keeps what is shown when the backend does not answer', async () => {
     const { store } = await loaded([NEWS])
     await store.refresh()

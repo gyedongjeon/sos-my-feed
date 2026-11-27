@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { api } from '../api'
 import { t } from '../i18n'
 import { browserLanguage as pageLanguageOf } from '../languages'
-import type { PageLanguage, ReaderSettings, Settings, Theme } from '../types'
+import type { PageLanguage, ReaderSettings, RefreshMinutes, Settings, Theme } from '../types'
 
 // The language of the pages matching the browser's language, e.g. "ko-KR" -> Korean.
 const browserLanguage = (): PageLanguage => pageLanguageOf(navigator.language)
@@ -29,6 +29,7 @@ export const useSettingsStore = defineStore('settings', {
     reader: { ...DEFAULT_READER },
     // The layout that is saved; `reader` differs from it while a choice is being tried.
     savedReader: { ...DEFAULT_READER },
+    refreshMinutes: 30 as RefreshMinutes,
     error: null as string | null,
   }),
   actions: {
@@ -36,6 +37,7 @@ export const useSettingsStore = defineStore('settings', {
     keep(saved: Settings) {
       if (saved.language) this.language = saved.language
       this.theme = saved.theme
+      this.refreshMinutes = saved.refresh_minutes
       this.savedReader = readerOf(saved)
       this.reader = { ...this.savedReader }
     },
@@ -50,7 +52,7 @@ export const useSettingsStore = defineStore('settings', {
       }
     },
     /** Saves the choices with some of them changed; a choice that cannot be saved is not made. */
-    async save(changed: { language?: PageLanguage; theme?: Theme; reader?: Partial<ReaderSettings> }) {
+    async save(changed: { language?: PageLanguage; theme?: Theme; reader?: Partial<ReaderSettings>; refreshMinutes?: RefreshMinutes }) {
       this.error = null
       const reader = { ...this.savedReader, ...changed.reader }
       const next: Settings = {
@@ -63,6 +65,7 @@ export const useSettingsStore = defineStore('settings', {
         reader_margin_h: reader.marginH,
         reader_pages: reader.pages,
         reader_tutorial_seen: reader.tutorialSeen,
+        refresh_minutes: changed.refreshMinutes ?? this.refreshMinutes,
       }
       try {
         this.keep(await api<Settings>('/settings', { method: 'PUT', json: next }))
@@ -76,6 +79,9 @@ export const useSettingsStore = defineStore('settings', {
     },
     setTheme(theme: Theme) {
       return this.save({ theme })
+    },
+    setRefreshMinutes(refreshMinutes: RefreshMinutes) {
+      return this.save({ refreshMinutes })
     },
     /** Shows the article with a layout that is not saved yet, as while a slider is dragged. */
     previewReader(changed: Partial<ReaderSettings>) {

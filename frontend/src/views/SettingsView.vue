@@ -5,13 +5,20 @@ import { t } from '../i18n'
 import { LANGUAGES } from '../languages'
 import { useFeedsStore } from '../stores/feeds'
 import { useSettingsStore } from '../stores/settings'
-import type { PageLanguage, Theme } from '../types'
+import { type PageLanguage, REFRESH_MINUTES, type RefreshMinutes, type Theme } from '../types'
 
 const feeds = useFeedsStore()
 const settings = useSettingsStore()
 // The feed whose removal waits to be confirmed.
 const removing = ref<number | null>(null)
 const chosen = (event: Event) => (event.target as HTMLSelectElement).value
+
+/** How an interval of refreshing is named, e.g. "Every 30 minutes". */
+function every(minutes: RefreshMinutes): string {
+  if (minutes === 0) return t('settings.refreshNever')
+  if (minutes < 60) return t('settings.refreshMinutes', { count: minutes })
+  return minutes === 60 ? t('settings.refreshHour') : t('settings.refreshHours', { count: minutes / 60 })
+}
 
 async function remove(id: number) {
   await feeds.remove(id)
@@ -36,6 +43,12 @@ async function remove(id: number) {
             <option value="">{{ t('settings.auto') }}</option>
             <option value="sos">{{ t('settings.light') }}</option>
             <option value="sos-night">{{ t('settings.dark') }}</option>
+          </select>
+        </label>
+        <label class="grid gap-2 font-semibold">
+          {{ t('settings.refresh') }}
+          <select class="select" :value="settings.refreshMinutes" @change="settings.setRefreshMinutes(Number(chosen($event)) as RefreshMinutes)">
+            <option v-for="minutes in REFRESH_MINUTES" :key="minutes" :value="minutes">{{ every(minutes) }}</option>
           </select>
         </label>
       </div>

@@ -13,6 +13,7 @@ const NOTHING_CHOSEN: Settings = {
   reader_margin_h: 40,
   reader_pages: 1,
   reader_tutorial_seen: false,
+  refresh_minutes: 30,
 }
 const CHOSEN: Settings = {
   language: 'ko',
@@ -24,6 +25,7 @@ const CHOSEN: Settings = {
   reader_margin_h: 30,
   reader_pages: 2,
   reader_tutorial_seen: true,
+  refresh_minutes: 60,
 }
 
 // A tiny backend: remembers the settings like the real `/api/settings`.
@@ -87,6 +89,26 @@ describe('settings', () => {
     expect(store.language).toBe('ko')
     // Said in the reader's language, which is Korean here.
     expect(store.error).toBe('설정을 저장하지 못했습니다: disk full')
+  })
+})
+
+describe('the interval of refreshing', () => {
+  it('is what was saved', async () => {
+    fakeBackend(CHOSEN, 'ko-KR')
+    const store = useSettingsStore()
+    await store.load()
+    expect(store.refreshMinutes).toBe(60)
+  })
+
+  it('is saved together with the other choices', async () => {
+    const backend = fakeBackend(CHOSEN, 'ko-KR')
+    const store = useSettingsStore()
+    await store.load()
+    await store.setRefreshMinutes(0)
+    expect(store.refreshMinutes).toBe(0)
+    expect(backend.saved).toEqual({ ...CHOSEN, refresh_minutes: 0 })
+    await store.setTheme('')
+    expect(backend.saved.refresh_minutes).toBe(0)
   })
 })
 

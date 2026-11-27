@@ -3,11 +3,14 @@
 from typing import Literal
 
 from fastapi import APIRouter
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from .db import get_connection
 
 router = APIRouter(prefix="/api")
+
+# The intervals the reader can choose from; 0 refreshes only when asked.
+REFRESH_MINUTES = (0, 15, 30, 60, 180)
 
 
 class Settings(BaseModel):
@@ -30,6 +33,16 @@ class Settings(BaseModel):
     reader_pages: int = Field(default=1, ge=1, le=2)
     # Whether the reader has been shown how pages are turned.
     reader_tutorial_seen: bool = False
+    # How often the feeds are read again while the app is open, in minutes; 0 never.
+    refresh_minutes: int = 30
+
+    @field_validator("refresh_minutes")
+    @classmethod
+    def _offered(cls, minutes: int) -> int:
+        # An int rather than a Literal, since the database gives back the text "30".
+        if minutes not in REFRESH_MINUTES:
+            raise ValueError(f"Expected one of {REFRESH_MINUTES}")
+        return minutes
 
 
 @router.get("/settings", response_model=Settings)

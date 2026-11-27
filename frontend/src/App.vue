@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, watchEffect } from 'vue'
+import { onMounted, onUnmounted, watch, watchEffect } from 'vue'
+import { refreshEvery } from './autoRefresh'
 import BrandMark from './components/BrandMark.vue'
 import { t } from './i18n'
 import { useFeedsStore } from './stores/feeds'
@@ -15,10 +16,23 @@ watchEffect(() => {
   else delete document.documentElement.dataset.theme
 })
 
-onMounted(() => {
-  void settings.load()
-  void feeds.load()
+// Stops refreshing the feeds on a schedule.
+let stopRefreshing = () => {}
+const refreshQuietly = () => void feeds.refresh({ quiet: true })
+
+onMounted(async () => {
+  await Promise.all([settings.load(), feeds.load()])
+  // The feeds are read again once the app opens, then every interval chosen.
+  stopRefreshing = refreshEvery(settings.refreshMinutes, refreshQuietly)
+  watch(
+    () => settings.refreshMinutes,
+    (minutes) => {
+      stopRefreshing()
+      stopRefreshing = refreshEvery(minutes, refreshQuietly, { now: false })
+    },
+  )
 })
+onUnmounted(() => stopRefreshing())
 </script>
 
 <template>

@@ -58,6 +58,10 @@ export interface ReaderSettings {
   tutorialSeen: boolean
 }
 
+/** The intervals the feeds can be refreshed at, in minutes; 0 only when asked. */
+export const REFRESH_MINUTES = [0, 15, 30, 60, 180] as const
+export type RefreshMinutes = (typeof REFRESH_MINUTES)[number]
+
 /** The settings as the backend keeps them. */
 export interface Settings {
   /** null until the reader, or the browser's language on the first visit, has chosen one. */
@@ -70,4 +74,6 @@ export interface Settings {
   reader_margin_h: number
   reader_pages: number
   reader_tutorial_seen: boolean
+  /** How often the feeds are read again while the app is open, in minutes; 0 never. */
+  refresh_minutes: RefreshMinutes
 }

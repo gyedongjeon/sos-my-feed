@@ -10,6 +10,7 @@ DEFAULTS = {
     "reader_margin_h": 40,
     "reader_pages": 1,
     "reader_tutorial_seen": False,
+    "refresh_minutes": 30,
 }
 CHOSEN = {
     "language": "ko",
@@ -21,6 +22,7 @@ CHOSEN = {
     "reader_margin_h": 30,
     "reader_pages": 2,
     "reader_tutorial_seen": True,
+    "refresh_minutes": 60,
 }
 
 
@@ -53,6 +55,8 @@ def test_settings_the_pages_do_not_have_are_refused(client):
         {"reader_margin_v": 39},
         {"reader_margin_h": 81},
         {"reader_pages": 3},
+        {"refresh_minutes": 7},
+        {"refresh_minutes": -15},
     )
     for wrong in wrong_choices:
         assert client.put("/api/settings", json={**valid, **wrong}).status_code == 422, wrong
@@ -66,3 +70,9 @@ PAGE_LANGUAGES = ["en", "ko", "ja", "zh-Hans", "zh-Hant", "es", "fr", "de", "it"
 def test_every_language_of_the_pages_can_be_chosen(client):
     for language in PAGE_LANGUAGES:
         assert client.put("/api/settings", json={**DEFAULTS, "language": language}).json()["language"] == language
+
+
+def test_feeds_can_be_refreshed_at_any_offered_interval_or_never(client):
+    for minutes in (0, 15, 30, 60, 180):
+        assert client.put("/api/settings", json={**DEFAULTS, "refresh_minutes": minutes}).json()["refresh_minutes"] == minutes
+        assert client.get("/api/settings").json()["refresh_minutes"] == minutes
