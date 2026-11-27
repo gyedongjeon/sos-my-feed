@@ -229,6 +229,53 @@ describe('reading', () => {
   })
 })
 
+describe('importing an OPML file', () => {
+  // A backend that lists the given feeds from any OPML file and subscribes to those it can read.
+  function importing(listed: { title: string; url: string }[], readable: Feed[]) {
+    const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
+      if (url === '/api/opml') return new Response(JSON.stringify(listed), { status: 200 })
+      const found = readable.find((feed) => feed.url === JSON.parse(String(init?.body)).url)
+      return found
+        ? new Response(JSON.stringify(found), { status: 201 })
+        : new Response(JSON.stringify({ detail: 'Could not read this feed.' }), { status: 502 })
+    })
+    vi.stubGlobal('fetch', fetchMock)
+    return fetchMock
+  }
+
+  it('subscribes to the feeds it lists', async () => {
+    const { store } = await loaded([])
+    const fetchMock = importing([NEWS, BLOG].map(({ title, url }) => ({ title, url })), [NEWS, BLOG])
+    expect(await store.importOpml('<opml/>')).toBe(2)
+    expect(fetchMock.mock.calls[0][1]!.body).toBe('<opml/>')
+    expect(store.feeds).toEqual([NEWS, BLOG])
+    expect(store.message).toBe('opml.added')
+  })
+
+  it('names the feeds that could not be read', async () => {
+    const { store } = await loaded([])
+    importing([NEWS, BLOG].map(({ title, url }) => ({ title, url })), [NEWS])
+    expect(await store.importOpml('<opml/>')).toBe(1)
+    expect(store.failures).toEqual(['Blog'])
+    expect(store.message).toBe('feed.failed')
+  })
+
+  it('says so when the file lists no feed to add', async () => {
+    const { store } = await loaded([NEWS])
+    importing([{ title: NEWS.title, url: NEWS.url }], [NEWS])
+    expect(await store.importOpml('<opml/>')).toBe(0)
+    expect(store.message).toBe('opml.nothing')
+  })
+
+  it('reports a file that is not OPML', async () => {
+    const { store } = await loaded([])
+    vi.stubGlobal('fetch', async () => new Response(JSON.stringify({ detail: 'Not an OPML file.' }), { status: 422 }))
+    expect(await store.importOpml('hello')).toBe(0)
+    expect(store.message).toBe('opml.invalid')
+    expect(store.busy).toBe(false)
+  })
+})
+
 describe('unsubscribing', () => {
   it('removes the feed and shows every feed again', async () => {
     const { store } = await loaded([NEWS, BLOG], { 'DELETE /api/feeds/1': { status: 204 } })

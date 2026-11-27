@@ -103,6 +103,13 @@ const es: Record<MessageKey, string> = {
   'settings.openSource': 'Código abierto',
   'settings.openSourceBody': 'SOS My Feed es de código abierto, con licencia MIT. Está hecho con los proyectos que figuran abajo.',
   'settings.licenses': 'Textos completos de las licencias',
+
+  'opml.intro': "Trae tus suscripciones de otro lector de feeds, o llévalas a otro, con un archivo OPML.",
+  'opml.import': "Importar OPML",
+  'opml.export': "Exportar OPML",
+  'opml.added': "Te has suscrito a los feeds del archivo.",
+  'opml.nothing': "El archivo no tiene ningún feed al que no estés suscrito ya.",
+  'opml.invalid': "No se pudo leer este archivo como OPML.",
 }
 
 export default es

@@ -20,6 +20,15 @@ function every(minutes: RefreshMinutes): string {
   return minutes === 60 ? t('settings.refreshHour') : t('settings.refreshHours', { count: minutes / 60 })
 }
 
+/** Subscribes to the feeds of the OPML file chosen. */
+async function importOpml(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  // Cleared, so that choosing the same file again imports it again.
+  input.value = ''
+  if (file) await feeds.importOpml(await file.text())
+}
+
 async function remove(id: number) {
   await feeds.remove(id)
   removing.value = null
@@ -57,6 +66,17 @@ async function remove(id: number) {
     <section class="card card-border mb-4 bg-base-100">
       <div class="card-body">
         <h2 class="card-title">{{ t('settings.subscriptions') }}</h2>
+        <p class="text-sm text-base-content/70">{{ t('opml.intro') }}</p>
+        <div class="flex flex-wrap gap-2">
+          <label class="btn btn-sm" :class="{ 'btn-disabled': feeds.busy }">
+            {{ t('opml.import') }}
+            <input type="file" accept=".opml,.xml,text/x-opml,text/xml,application/xml" class="hidden" :disabled="feeds.busy" @change="importOpml" />
+          </label>
+          <a v-if="feeds.feeds.length" class="btn btn-sm" href="/api/opml" download="sos-my-feed.opml">{{ t('opml.export') }}</a>
+        </div>
+        <p role="status" aria-live="polite" class="text-sm">
+          {{ feeds.busy ? t('feed.busy') : feeds.message ? t(feeds.message) : '' }} {{ feeds.failures.join(', ') }}
+        </p>
         <p v-if="!feeds.feeds.length">{{ t('feed.empty') }}</p>
         <div v-for="feed in feeds.feeds" :key="feed.id" class="flex flex-wrap items-center gap-2 border-t border-base-300 py-3">
           <div class="min-w-0 grow basis-52">

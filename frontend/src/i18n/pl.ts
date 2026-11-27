@@ -103,6 +103,13 @@ const pl: Record<MessageKey, string> = {
   'settings.openSource': 'Otwarte oprogramowanie',
   'settings.openSourceBody': 'SOS My Feed to otwarte oprogramowanie na licencji MIT. Powstało dzięki projektom wymienionym poniżej.',
   'settings.licenses': 'Pełne teksty licencji',
+
+  'opml.intro': "Przenieś subskrypcje z innego czytnika kanałów lub do niego za pomocą pliku OPML.",
+  'opml.import': "Importuj OPML",
+  'opml.export': "Eksportuj OPML",
+  'opml.added': "Zasubskrybowano kanały z pliku.",
+  'opml.nothing': "Plik nie zawiera kanałów, których jeszcze nie subskrybujesz.",
+  'opml.invalid': "Nie udało się odczytać tego pliku jako OPML.",
 }
 
 export default pl

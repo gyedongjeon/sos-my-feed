@@ -7,6 +7,7 @@ from fastapi.responses import FileResponse
 
 from .articles import router as articles_router
 from .db import init_db
+from .opml import router as opml_router
 from .paths import FRONTEND_DIST
 from .settings import router as settings_router
 from .subscriptions import router as subscriptions_router
@@ -20,6 +21,7 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(title="sos-my-feed", lifespan=lifespan)
 app.include_router(articles_router)
+app.include_router(opml_router)
 app.include_router(settings_router)
 app.include_router(subscriptions_router)
 

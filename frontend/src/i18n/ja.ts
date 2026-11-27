@@ -103,6 +103,13 @@ const ja: Record<MessageKey, string> = {
   'settings.openSource': 'オープンソース',
   'settings.openSourceBody': 'SOS My Feed は MIT ライセンスのオープンソースです。以下のソフトウェアを利用して作られています。',
   'settings.licenses': 'ライセンス全文',
+
+  'opml.intro': "OPML ファイルで、ほかのフィードリーダーとの間で購読を移せます。",
+  'opml.import': "OPML を読み込む",
+  'opml.export': "OPML を書き出す",
+  'opml.added': "ファイルのフィードを購読しました。",
+  'opml.nothing': "ファイルに新しく購読するフィードはありません。",
+  'opml.invalid': "OPML ファイルとして読み込めませんでした。",
 }
 
 export default ja

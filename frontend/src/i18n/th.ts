@@ -103,6 +103,13 @@ const th: Record<MessageKey, string> = {
   'settings.openSource': 'โอเพนซอร์ส',
   'settings.openSourceBody': 'SOS My Feed เป็นโอเพนซอร์สภายใต้สัญญาอนุญาต MIT และสร้างขึ้นด้วยผลงานด้านล่างนี้',
   'settings.licenses': 'ข้อความสัญญาอนุญาตฉบับเต็ม',
+
+  'opml.intro': "ย้ายการติดตามจากโปรแกรมอ่านฟีดอื่น หรือไปยังโปรแกรมอื่น ด้วยไฟล์ OPML",
+  'opml.import': "นำเข้า OPML",
+  'opml.export': "ส่งออก OPML",
+  'opml.added': "ติดตามฟีดในไฟล์แล้ว",
+  'opml.nothing': "ไม่มีฟีดในไฟล์ที่คุณยังไม่ได้ติดตาม",
+  'opml.invalid': "อ่านไฟล์นี้เป็น OPML ไม่ได้",
 }
 
 export default th

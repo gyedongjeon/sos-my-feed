@@ -103,6 +103,13 @@ const vi: Record<MessageKey, string> = {
   'settings.openSource': 'Mã nguồn mở',
   'settings.openSourceBody': 'SOS My Feed là phần mềm mã nguồn mở theo Giấy phép MIT. Ứng dụng được xây dựng từ các sản phẩm dưới đây.',
   'settings.licenses': 'Toàn văn các giấy phép',
+
+  'opml.intro': "Chuyển các nguồn đã đăng ký từ trình đọc khác, hoặc sang trình đọc khác, bằng tệp OPML.",
+  'opml.import': "Nhập OPML",
+  'opml.export': "Xuất OPML",
+  'opml.added': "Đã đăng ký các nguồn tin trong tệp.",
+  'opml.nothing': "Tệp không có nguồn tin nào bạn chưa đăng ký.",
+  'opml.invalid': "Không đọc được tệp này dưới dạng OPML.",
 }
 
 export default vi

@@ -101,4 +101,11 @@ export default {
   'settings.openSource': 'Open source',
   'settings.openSourceBody': 'SOS My Feed is open source under the MIT License. It is built with the work below.',
   'settings.licenses': 'Full license texts',
+
+  'opml.intro': "Move your subscriptions from another feed reader, or to one, with an OPML file.",
+  'opml.import': "Import OPML",
+  'opml.export': "Export OPML",
+  'opml.added': "Subscribed to the feeds in the file.",
+  'opml.nothing': "The file lists no feed you are not already subscribed to.",
+  'opml.invalid': "This file could not be read as OPML.",
 }

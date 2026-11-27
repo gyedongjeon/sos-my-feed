@@ -103,6 +103,13 @@ const zhHant: Record<MessageKey, string> = {
   'settings.openSource': '開放原始碼',
   'settings.openSourceBody': 'SOS My Feed 是以 MIT 授權條款釋出的開放原始碼軟體，並採用了下列專案的成果。',
   'settings.licenses': '授權條款全文',
+
+  'opml.intro': "用 OPML 檔案在其他閱讀器之間搬移訂閱。",
+  'opml.import': "匯入 OPML",
+  'opml.export': "匯出 OPML",
+  'opml.added': "已訂閱檔案中的訂閱源。",
+  'opml.nothing': "檔案中沒有尚未訂閱的訂閱源。",
+  'opml.invalid': "無法將此檔案讀取為 OPML。",
 }
 
 export default zhHant
